@@ -11,14 +11,6 @@ tasks:
     - cargo check
     - cargo clippy
 
-  build:
-    cmds:
-      - cargo build --bins
-      - cmd: install -D --no-target-directory --verbose "target/debug/{{.ITEM}}{{exeExt}}" "dist/{{.ITEM}}-{{.HOST}}{{exeExt}}"
-        for:
-          var: TARGETS
-        silent: true
-
   clean:
     cmds:
       - cargo clean
