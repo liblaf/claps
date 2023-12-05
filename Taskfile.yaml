@@ -4,9 +4,7 @@ vars:
   HOST:
     sh: |
       rustc --version --verbose | sed --quiet "s/host: //p"
-  TARGETS:
-    sh: cargo read-manifest |
-      yq '.targets.[] | select(.kind == ["bin"]) | .name'
+  TARGETS: ddns-cli
 
 tasks:
   default:
@@ -22,7 +20,7 @@ tasks:
   dist:
     cmds:
       - cargo build --release
-      - cmd: install -D --no-target-directory --verbose "target/release/{{.ITEM}}" "dist/{{.ITEM}}-{{.HOST}}{{exeExt}}"
+      - cmd: install -D --no-target-directory --verbose "target/release/{{.ITEM}}{{exeExt}}" "dist/{{.ITEM}}-{{.HOST}}{{exeExt}}"
         for:
           var: TARGETS
         silent: true
