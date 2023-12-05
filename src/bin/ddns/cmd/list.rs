@@ -10,7 +10,7 @@ use tabled::settings::Style;
 #[derive(Debug, Args)]
 pub(super) struct Cmd {
     #[command(flatten)]
-    args: crate::args::Args,
+    args: super::CommonArgs,
 }
 
 #[async_trait::async_trait]

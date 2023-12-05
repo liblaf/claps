@@ -4,12 +4,20 @@ vars:
   HOST:
     sh: |
       rustc --version --verbose | sed --quiet "s/host: //p"
-  TARGETS: ddns-cli
+  TARGETS: ddns gfw
 
 tasks:
   default:
     - cargo check
     - cargo clippy
+
+  build:
+    cmds:
+      - cargo build --bins
+      - cmd: install -D --no-target-directory --verbose "target/debug/{{.ITEM}}{{exeExt}}" "dist/{{.ITEM}}-{{.HOST}}{{exeExt}}"
+        for:
+          var: TARGETS
+        silent: true
 
   clean:
     cmds:
@@ -19,8 +27,16 @@ tasks:
 
   dist:
     cmds:
-      - cargo build --release
+      - cargo build --bins --release
       - cmd: install -D --no-target-directory --verbose "target/release/{{.ITEM}}{{exeExt}}" "dist/{{.ITEM}}-{{.HOST}}{{exeExt}}"
         for:
           var: TARGETS
         silent: true
+
+  docs:
+    cmds:
+      - cmd: mkdir --parents --verbose docs
+        silent: true
+      - cmd: cargo run --bin="{{.ITEM}}" complete markdown > "docs/{{.ITEM}}.md"
+        for:
+          var: TARGETS
