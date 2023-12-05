@@ -13,8 +13,24 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    outputs:
+      releases-created: ${{ steps.release.outputs.releases_created }}
+      tag-name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - id: release
+        name: Create GitHub Release
+        uses: google-github-actions/release-please-action@v4
+        with:
+          release-type: rust
+
   build:
     name: Build
+    needs:
+      - release
+    if: needs.release.outputs.releases-created == 'true'
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -43,19 +59,6 @@ jobs:
           - macos-latest
           - ubuntu-latest
           - windows-latest
-
-  release:
-    name: Create GitHub Release
-    runs-on: ubuntu-latest
-    outputs:
-      releases-created: ${{ steps.release.outputs.releases_created }}
-      tag-name: ${{ steps.release.outputs.tag_name }}
-    steps:
-      - id: release
-        name: Create GitHub Release
-        uses: google-github-actions/release-please-action@v4
-        with:
-          release-type: rust
 
   publish:
     name: Publish
