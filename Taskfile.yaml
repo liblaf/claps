@@ -1,0 +1,28 @@
+version: "3"
+
+vars:
+  HOST:
+    sh: |
+      rustc --version --verbose | sed --quiet "s/host: //p"
+  TARGETS:
+    sh: cargo read-manifest |
+      yq '.targets.[] | select(.kind == ["bin"]) | .name'
+
+tasks:
+  default:
+    - cargo check
+    - cargo clippy
+
+  clean:
+    cmds:
+      - cargo clean
+      - cmd: rm --force --recursive --verbose dist
+        silent: true
+
+  dist:
+    cmds:
+      - cargo build --release
+      - cmd: install -D --no-target-directory --verbose "target/release/{{.ITEM}}" "dist/{{.ITEM}}-{{.HOST}}{{exeExt}}"
+        for:
+          var: TARGETS
+        silent: true
