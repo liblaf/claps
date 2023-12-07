@@ -17,8 +17,8 @@ jobs:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     outputs:
-      releases-created: ${{ steps.release.outputs.releases_created }}
-      tag-name: ${{ steps.release.outputs.tag_name }}
+      created: ${{ steps.release.outputs.releases_created }}
+      tag: ${{ steps.release.outputs.tag_name }}
     steps:
       - id: release
         name: Create GitHub Release
@@ -30,7 +30,7 @@ jobs:
     name: Build
     needs:
       - release
-    if: needs.release.outputs.releases-created == 'true'
+    if: needs.release.outputs.created == 'true'
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -43,7 +43,9 @@ jobs:
       - name: Install Task
         uses: arduino/setup-task@v1
       - name: Install Rust Toolchain
-        run: rustup default stable
+        run: |
+          rustup default stable
+          rustup update stable
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
       - name: Build
@@ -64,7 +66,7 @@ jobs:
     name: Publish
     needs:
       - release
-    if: needs.release.outputs.releases-created == 'true'
+    if: needs.release.outputs.created == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -83,7 +85,7 @@ jobs:
     needs:
       - build
       - release
-    if: needs.release.outputs.releases-created == 'true'
+    if: needs.release.outputs.created == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Download Artifacts
@@ -93,5 +95,5 @@ jobs:
       - name: Upload Release Assets
         uses: softprops/action-gh-release@master
         with:
-          tag_name: ${{ needs.release.outputs.tag-name }}
+          tag_name: ${{ needs.release.outputs.tag }}
           files: artifacts/**/*

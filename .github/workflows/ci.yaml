@@ -24,7 +24,9 @@ jobs:
       - name: Install Task
         uses: arduino/setup-task@v1
       - name: Install Rust Toolchain
-        run: rustup default stable
+        run: |
+          rustup default stable
+          rustup update stable
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
       - name: Build

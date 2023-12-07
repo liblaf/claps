@@ -7,6 +7,7 @@ use claps::common::cmd::{Run, STYLES};
 use claps::common::log::LogInit;
 
 mod delete;
+mod install;
 mod list;
 mod update;
 
@@ -24,6 +25,7 @@ pub(super) struct Cmd {
 enum SubCmd {
     Complete(claps::common::cmd::complete::Cmd<Cmd>),
     Delete(delete::Cmd),
+    Install(install::Cmd),
     List(list::Cmd),
     Update(update::Cmd),
 }
@@ -35,6 +37,7 @@ impl Run for Cmd {
         match self.sub_cmd {
             SubCmd::Complete(cmd) => cmd.run().await,
             SubCmd::Delete(cmd) => cmd.run().await,
+            SubCmd::Install(cmd) => cmd.run().await,
             SubCmd::List(cmd) => cmd.run().await,
             SubCmd::Update(cmd) => cmd.run().await,
         }

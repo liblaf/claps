@@ -7,5 +7,5 @@ CLIs written in Rust
 
 ## Command-Line Help
 
-- [ddns](docs/ddns.md)
-- [gfw](docs/gfw.md)
+- [ddns](docs/ddns/README.md)
+- [gfw](docs/gfw/README.md)

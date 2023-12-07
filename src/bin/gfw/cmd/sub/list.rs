@@ -28,7 +28,7 @@ const FIELDS: &[Field] = &[
 impl Run for Cmd {
     async fn run(self) -> Result<()> {
         let items = self.args.items()?;
-        let subs: Vec<Sub> = futures::future::join_all(items.iter().map(|item| Sub::from(item)))
+        let subs: Vec<Sub> = futures::future::join_all(items.iter().map(Sub::from))
             .await
             .into_iter()
             .filter_map(|sub| sub.log().ok())

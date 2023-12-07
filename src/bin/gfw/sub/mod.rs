@@ -42,7 +42,7 @@ async fn user_info(url: &str) -> Result<UserInfo> {
         .to_str()
         .log()?;
     let mut user_info = UserInfo::default();
-    for segment in header.split(";") {
+    for segment in header.split(';') {
         let segment = segment.trim();
         if let Some((key, value)) = segment.split_once('=') {
             let key = key.trim();

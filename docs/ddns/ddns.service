@@ -1,0 +1,6 @@
+[Service]
+ExecStart = %h/.local/bin/ddns update
+TimeoutSec = 1min
+
+[Unit]
+Description = DDNS

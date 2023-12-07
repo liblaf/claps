@@ -29,6 +29,8 @@ tasks:
     cmds:
       - cmd: mkdir --parents --verbose docs
         silent: true
-      - cmd: cargo run --bin="{{.ITEM}}" complete markdown > "docs/{{.ITEM}}.md"
+      - cmd: |
+          mkdir --parents --verbose "docs/{{.ITEM}}"
+          cargo run --bin="{{.ITEM}}" complete markdown > "docs/{{.ITEM}}/README.md"
         for:
           var: TARGETS

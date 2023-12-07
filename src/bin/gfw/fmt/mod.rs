@@ -9,11 +9,11 @@ use tabled::Table;
 use crate::sub::Sub;
 
 pub trait FmtTable {
-    fn fmt_table<'a>(&self, fields: &'a [Field]) -> Table;
+    fn fmt_table(&self, fields: &[Field]) -> Table;
 }
 
 pub trait FmtRow {
-    fn fmt_row<'a>(&self, fields: &'a [Field]) -> Vec<String> {
+    fn fmt_row(&self, fields: &[Field]) -> Vec<String> {
         fields
             .iter()
             .map(|field| match field {
@@ -168,7 +168,7 @@ impl<R> FmtTable for Vec<R>
 where
     R: FmtRow,
 {
-    fn fmt_table<'a>(&self, fields: &'a [Field]) -> Table {
+    fn fmt_table(&self, fields: &[Field]) -> Table {
         let mut builder = Builder::new();
         builder.set_header(fields.iter().map(|field| field.as_str()));
         self.iter().map(|row| row.fmt_row(fields)).for_each(|row| {

@@ -7,6 +7,7 @@ This document contains the help content for the `ddns` command-line program.
 - [`ddns`↴](#ddns)
 - [`ddns complete`↴](#ddns-complete)
 - [`ddns delete`↴](#ddns-delete)
+- [`ddns install`↴](#ddns-install)
 - [`ddns list`↴](#ddns-list)
 - [`ddns update`↴](#ddns-update)
 
@@ -18,6 +19,7 @@ This document contains the help content for the `ddns` command-line program.
 
 - `complete` — Generate tab-completion scripts for your shell
 - `delete` —
+- `install` —
 - `list` —
 - `update` —
 
@@ -49,6 +51,10 @@ Generate tab-completion scripts for your shell
 - `-z`, `--zone <ZONE>`
 
   Default value: `919b04037636d3b4bbc0af135eaccdfa`
+
+## `ddns install`
+
+**Usage:** `ddns install`
 
 ## `ddns list`
 
