@@ -31,7 +31,7 @@ impl Run for Cmd {
                 "sub",
                 items
                     .iter()
-                    .filter_map(|item| item.notes.as_deref())
+                    .filter_map(|item| item.notes())
                     .collect::<Vec<_>>()
                     .join("|"),
             )])

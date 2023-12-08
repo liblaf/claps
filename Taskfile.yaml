@@ -4,7 +4,7 @@ vars:
   HOST:
     sh: |
       rustc --version --verbose | sed --quiet "s/host: //p"
-  TARGETS: ddns gfw
+  TARGETS: ddns gfw pm
 
 tasks:
   default:
@@ -34,3 +34,4 @@ tasks:
           cargo run --bin="{{.ITEM}}" complete markdown > "docs/{{.ITEM}}/README.md"
         for:
           var: TARGETS
+      - prettier --write docs

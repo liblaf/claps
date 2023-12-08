@@ -1,7 +1,8 @@
 use anyhow::Result;
 use clap::{Args, Subcommand};
 
-use claps::{common::cmd::Run, external::bitwarden::Item};
+use claps::common::cmd::Run;
+use claps::external::bitwarden::types::Item;
 
 mod list;
 mod update;
@@ -36,7 +37,7 @@ struct CommonArgs {
 
 impl CommonArgs {
     fn items(&self) -> Result<Vec<Item>> {
-        let folder = claps::external::bitwarden::get_folder(&self.folder)?;
-        claps::external::bitwarden::list_items(folder.id)
+        let folder = claps::external::bitwarden::get::folder(&self.folder)?;
+        claps::external::bitwarden::list::items("", &folder.id)
     }
 }

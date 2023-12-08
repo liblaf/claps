@@ -66,7 +66,7 @@ impl CommonArgs {
         if let Some(token) = &self.token {
             return Ok(token.to_string());
         }
-        if let Ok(token) = claps::external::bitwarden::get_notes("CLOUDFLARE_TOKEN") {
+        if let Ok(token) = claps::external::bitwarden::get::notes("CLOUDFLARE_TOKEN") {
             return Ok(token);
         }
         claps::bail!("token was not provided");

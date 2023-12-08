@@ -2,7 +2,7 @@ use anyhow::Result;
 use chrono::{DateTime, Utc};
 
 use claps::common::log::LogResult;
-use claps::external::bitwarden::Item;
+use claps::external::bitwarden::types::Item;
 
 #[derive(Debug, Default)]
 pub struct UserInfo {
@@ -22,9 +22,9 @@ pub struct Sub {
 impl Sub {
     pub async fn from(item: &Item) -> Result<Self> {
         Ok(Sub {
-            name: item.name.to_owned(),
-            url: item.notes.to_owned(),
-            user_info: match item.notes.as_deref() {
+            name: item.name().to_string(),
+            url: item.notes().map(|s| s.to_string()),
+            user_info: match item.notes() {
                 Some(url) => user_info(url).await.log().ok(),
                 None => None,
             },

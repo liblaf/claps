@@ -9,3 +9,4 @@ CLIs written in Rust
 
 - [ddns](docs/ddns/README.md)
 - [gfw](docs/gfw/README.md)
+- [pm](docs/pm/README.md)
