@@ -23,6 +23,8 @@ jobs:
           choco: gnuwin32-coreutils.install sed
       - name: Install Task
         uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ github.token }}
       - name: Install Rust Toolchain
         run: |
           rustup default stable
@@ -54,9 +56,24 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           path: artifacts
+      - name: Delete Existing Release
+        run: gh release --repo="${{ github.repository }}" delete dev --cleanup-tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        continue-on-error: true
       - name: Upload Release Assets
-        uses: softprops/action-gh-release@master
+        run: gh release --repo="${{ github.repository }}" create dev artifacts/**/* --generate-notes --prerelease
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  check:
+    name: Check
+    needs:
+      - build
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check
+        uses: re-actors/alls-green@release/v1
         with:
-          tag_name: dev
-          prerelease: true
-          files: artifacts/**/*
+          jobs: ${{ toJSON(needs) }}

@@ -42,6 +42,8 @@ jobs:
           choco: gnuwin32-coreutils.install sed
       - name: Install Task
         uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ github.token }}
       - name: Install Rust Toolchain
         run: |
           rustup default stable
@@ -93,7 +95,6 @@ jobs:
         with:
           path: artifacts
       - name: Upload Release Assets
-        uses: softprops/action-gh-release@master
-        with:
-          tag_name: ${{ needs.release.outputs.tag }}
-          files: artifacts/**/*
+        run: gh release --repo="${{ github.repository }}" upload "${{ needs.release.outputs.tag }}" artifacts/**/* --clobber
+        env:
+          GH_TOKEN: ${{ github.token }}
