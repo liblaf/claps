@@ -23,6 +23,8 @@ jobs:
           choco: gnuwin32-coreutils.install sed
       - name: Install Task
         uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ github.token }}
       - name: Install Rust Toolchain
         run: |
           rustup default stable
