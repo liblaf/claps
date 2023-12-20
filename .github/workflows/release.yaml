@@ -35,21 +35,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install GNU Softwares
-        uses: liblaf/template/.github/actions/install@main
-        with:
-          brew: coreutils gnu-sed
-          choco: gnuwin32-coreutils.install sed
-      - name: Install Task
-        uses: arduino/setup-task@v1
-        with:
-          repo-token: ${{ github.token }}
       - name: Install Rust Toolchain
         run: |
           rustup default stable
           rustup update stable
       - name: Rust Cache
         uses: Swatinem/rust-cache@v2
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ github.token }}
+      - name: Install GNU Softwares
+        uses: liblaf/template/.github/actions/install@main
+        with:
+          brew: coreutils gnu-sed
+          choco: gnuwin32-coreutils.install sed
       - name: Build
         run: task dist
       - name: Upload Build Artifact
