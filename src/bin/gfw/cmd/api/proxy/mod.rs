@@ -40,6 +40,11 @@ fn pretty(proxies: &HashMap<String, Proxy>, name: &str) -> String {
     if let Some(latency) = latency {
         output += format!(" ({})", latency).as_str();
     }
+    let mut now = name;
+    while let Some(n) = proxies.get(now).unwrap().now.as_deref() {
+        output += format!(" -> {}", n).as_str();
+        now = n;
+    }
     if name == proxy.now.as_deref().unwrap() {
         output = output.bold().reversed().to_string();
     };

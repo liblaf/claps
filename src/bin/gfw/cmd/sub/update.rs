@@ -25,7 +25,7 @@ impl Run for Cmd {
     async fn run(self) -> Result<()> {
         let items = self.args.items()?;
         let client = Client::new();
-        let response = client
+        let request = client
             .get(format!("{}/convert/sing-box", self.api))
             .query(&[(
                 "sub",
@@ -35,10 +35,14 @@ impl Run for Cmd {
                     .collect::<Vec<_>>()
                     .join("|"),
             )])
-            .send()
+            .build()?;
+        tracing::info!("{}", request.url());
+        let response = client
+            .execute(request)
             .await
+            .log()?
+            .error_for_status()
             .log()?;
-        let response = response.error_for_status().log()?;
         try_write(self.config, response.bytes().await.log()?)?;
         claps::external::sudo::sudo(["systemctl", "restart", "sing-box.service"])?;
         tracing::info!("sudo systemctl restart sing-box.service");
