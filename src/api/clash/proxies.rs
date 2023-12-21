@@ -8,21 +8,31 @@ use crate::common::log::LogResult;
 
 impl Client {
     pub async fn proxies(&self) -> Result<HashMap<String, Proxy>> {
-        let url = self.url.join("/proxies")?;
-        let response = self.get(url)?.send().await.log()?;
-        response.error_for_status_ref().log()?;
-        let response: Response = response.json().await?;
+        let url = self.url.join("/proxies").log()?;
+        let response: Response = self
+            .get(url)?
+            .send()
+            .await
+            .log()?
+            .error_for_status()
+            .log()?
+            .json()
+            .await
+            .log()?;
         Ok(response.proxies)
     }
 
     pub async fn proxy_set(&self, proxy: &str, name: &str) -> Result<()> {
-        let url = self.url.join(format!("/proxies/{}", proxy).as_str())?;
+        let url = self
+            .url
+            .join(format!("/proxies/{}", proxy).as_str())
+            .log()?;
         self.put(url)?
             .json(&serde_json::json!({ "name": name }))
             .send()
             .await
             .log()?
-            .error_for_status_ref()
+            .error_for_status()
             .log()?;
         tracing::info!("{} -> {}", proxy, name);
         Ok(())

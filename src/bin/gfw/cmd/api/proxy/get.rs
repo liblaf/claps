@@ -16,11 +16,9 @@ pub(super) struct Cmd {
 impl Run for Cmd {
     async fn run(self) -> Result<()> {
         let client = Client::new(self.common.url, self.common.secret)?;
-        let proxies = client.proxies().await?;
-        let proxy = proxies.get("PROXY").unwrap();
-        let all = proxy.all.as_deref().unwrap();
-        for name in all {
-            println!("{}", crate::cmd::api::proxy::pretty(&proxies, name));
+        let pretties = crate::cmd::api::proxy::pretty(&client, "PROXY").await?;
+        for pretty in pretties {
+            println!("{}", pretty);
         }
         Ok(())
     }

@@ -5,6 +5,10 @@ This document contains the help content for the `gfw` command-line program.
 **Command Overview:**
 
 - [`gfw`↴](#gfw)
+- [`gfw api`↴](#gfw-api)
+- [`gfw api proxy`↴](#gfw-api-proxy)
+- [`gfw api proxy get`↴](#gfw-api-proxy-get)
+- [`gfw api proxy set`↴](#gfw-api-proxy-set)
 - [`gfw complete`↴](#gfw-complete)
 - [`gfw ip`↴](#gfw-ip)
 - [`gfw sub`↴](#gfw-sub)
@@ -13,18 +17,66 @@ This document contains the help content for the `gfw` command-line program.
 
 ## `gfw`
 
+Logging flags to `#[command(flatte)]` into your CLI
+
 **Usage:** `gfw [OPTIONS] <COMMAND>`
 
 ###### **Subcommands:**
 
+- `api` —
 - `complete` — Generate tab-completion scripts for your shell
 - `ip` —
 - `sub` —
 
 ###### **Options:**
 
-- `-v`, `--verbose` — More output per occurrence
-- `-q`, `--quiet` — Less output per occurrence
+- `-v`, `--verbose` — Increase logging verbosity
+- `-q`, `--quiet` — Decrease logging verbosity
+
+## `gfw api`
+
+**Usage:** `gfw api <COMMAND>`
+
+###### **Subcommands:**
+
+- `proxy` —
+
+## `gfw api proxy`
+
+**Usage:** `gfw api proxy <COMMAND>`
+
+###### **Subcommands:**
+
+- `get` —
+- `set` —
+
+## `gfw api proxy get`
+
+**Usage:** `gfw api proxy get [OPTIONS]`
+
+###### **Options:**
+
+- `-u`, `--url <URL>`
+
+  Default value: `http://127.0.0.1:9090`
+
+- `-s`, `--secret <SECRET>`
+
+## `gfw api proxy set`
+
+**Usage:** `gfw api proxy set [OPTIONS] [NAME]`
+
+###### **Arguments:**
+
+- `<NAME>`
+
+###### **Options:**
+
+- `-u`, `--url <URL>`
+
+  Default value: `http://127.0.0.1:9090`
+
+- `-s`, `--secret <SECRET>`
 
 ## `gfw complete`
 

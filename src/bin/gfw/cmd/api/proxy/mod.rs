@@ -1,10 +1,8 @@
-use std::collections::HashMap;
-
 use anyhow::Result;
 use clap::{Args, Subcommand};
 use colored::Colorize;
 
-use claps::api::clash::proxies::Proxy;
+use claps::api::clash::Client;
 use claps::common::cmd::Run;
 
 mod get;
@@ -32,45 +30,46 @@ impl Run for Cmd {
     }
 }
 
-fn pretty(proxies: &HashMap<String, Proxy>, name: &str) -> String {
-    let proxy = proxies.get("PROXY").unwrap();
-    let latency = crate::cmd::api::proxy::get_latency(&proxies, name);
-    let mut output = String::new();
-    output += name;
-    if let Some(latency) = latency {
-        output += format!(" ({})", latency).as_str();
-    }
-    let mut now = name;
-    while let Some(n) = proxies.get(now).unwrap().now.as_deref() {
-        output += format!(" -> {}", n).as_str();
-        now = n;
-    }
-    if name == proxy.now.as_deref().unwrap() {
-        output = output.bold().reversed().to_string();
-    };
-    if let Some(latency) = latency {
-        if latency < 200 {
-            output = output.green().to_string();
-        } else if latency < 500 {
-            output = output.yellow().to_string();
-        } else {
-            output = output.red().to_string();
-        }
-    }
-    output
-}
-
-fn get_latency(proxies: &HashMap<String, Proxy>, name: &str) -> Option<u64> {
-    let proxy = proxies.get(name)?;
-    if let Some(history) = proxy.history.last() {
-        return Some(history.delay);
-    }
-    if let Some(all) = proxy.all.as_deref() {
-        for name in all {
-            if let Some(latency) = get_latency(proxies, name) {
-                return Some(latency);
+async fn pretty(client: &Client, group: &str) -> Result<Vec<String>> {
+    let proxies = client.proxies().await?;
+    let delay = client.group_delay(group).await.unwrap_or_default();
+    let group = proxies.get(group).unwrap();
+    Ok(group
+        .all
+        .as_deref()
+        .unwrap()
+        .iter()
+        .map(|name| {
+            let mut output = name.to_string();
+            let delay = delay.get(name).map(|delay| delay.to_owned()).or_else(|| {
+                proxies
+                    .get(name)
+                    .unwrap()
+                    .history
+                    .last()
+                    .map(|history| history.delay)
+            });
+            if let Some(delay) = delay {
+                output += format!(" ({})", delay).as_str();
             }
-        }
-    }
-    None
+            let mut now = proxies.get(name).unwrap().now.as_deref();
+            while let Some(next) = now {
+                output += format!(" -> {}", next).as_str();
+                now = proxies.get(next).unwrap().now.as_deref();
+            }
+            if name == group.now.as_deref().unwrap() {
+                output = output.bold().reversed().to_string();
+            }
+            if let Some(delay) = delay {
+                if delay < 200 {
+                    output = output.green().to_string();
+                } else if delay < 500 {
+                    output = output.yellow().to_string();
+                } else {
+                    output = output.red().to_string();
+                }
+            }
+            output
+        })
+        .collect())
 }

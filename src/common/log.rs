@@ -75,6 +75,9 @@ where
 {
     #[track_caller]
     fn log(self) -> anyhow::Result<T> {
-        self.map_err(|e| e.log())
+        match self {
+            Ok(t) => Ok(t),
+            Err(e) => Err(e.log()),
+        }
     }
 }

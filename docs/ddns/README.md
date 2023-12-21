@@ -13,6 +13,8 @@ This document contains the help content for the `ddns` command-line program.
 
 ## `ddns`
 
+Logging flags to `#[command(flatte)]` into your CLI
+
 **Usage:** `ddns [OPTIONS] <COMMAND>`
 
 ###### **Subcommands:**
@@ -25,8 +27,8 @@ This document contains the help content for the `ddns` command-line program.
 
 ###### **Options:**
 
-- `-v`, `--verbose` — More output per occurrence
-- `-q`, `--quiet` — Less output per occurrence
+- `-v`, `--verbose` — Increase logging verbosity
+- `-q`, `--quiet` — Decrease logging verbosity
 
 ## `ddns complete`
 

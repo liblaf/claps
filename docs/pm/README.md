@@ -10,6 +10,8 @@ This document contains the help content for the `pm` command-line program.
 
 ## `pm`
 
+Logging flags to `#[command(flatte)]` into your CLI
+
 **Usage:** `pm [OPTIONS] <COMMAND>`
 
 ###### **Subcommands:**
@@ -19,8 +21,8 @@ This document contains the help content for the `pm` command-line program.
 
 ###### **Options:**
 
-- `-v`, `--verbose` — More output per occurrence
-- `-q`, `--quiet` — Less output per occurrence
+- `-v`, `--verbose` — Increase logging verbosity
+- `-q`, `--quiet` — Decrease logging verbosity
 
 ## `pm search`
 

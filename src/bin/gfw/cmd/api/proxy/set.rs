@@ -20,29 +20,30 @@ impl Run for Cmd {
     async fn run(self) -> Result<()> {
         let client = Client::new(self.common.url, self.common.secret)?;
         let proxies = client.proxies().await?;
-        let proxy = proxies.get("PROXY").unwrap();
-        let all = proxy.all.as_deref().unwrap();
-        let all = if let Some(name) = self.name {
-            all.iter()
-                .filter(|n| n.contains(name.as_str()))
-                .map(|n| n.to_string())
-                .collect()
+        let proxies = proxies.get("PROXY").unwrap().all.as_deref().unwrap();
+        let pretties = crate::cmd::api::proxy::pretty(&client, "PROXY").await?;
+        let mut filtered_proxies = vec![];
+        let mut filtered_pretties = vec![];
+        for (proxy, pretty) in proxies.iter().zip(pretties.iter()) {
+            if let Some(name) = self.name.as_deref() {
+                if !proxy.contains(name) {
+                    continue;
+                }
+            }
+            filtered_proxies.push(proxy);
+            filtered_pretties.push(pretty);
+        }
+        let proxies = filtered_proxies;
+        let pretties = filtered_pretties;
+        let name = if proxies.len() == 1 {
+            proxies.first().unwrap()
         } else {
-            all.to_vec()
-        };
-        let name = if all.len() == 1 {
-            all.first().unwrap()
-        } else {
-            let options: Vec<_> = all
-                .iter()
-                .map(|name| crate::cmd::api::proxy::pretty(&proxies, name))
-                .collect();
-            let select = Select::new("Select Proxy", options.to_owned()).prompt()?;
-            let select = options
+            let select = Select::new("Select Proxy", pretties.to_owned()).prompt()?;
+            let select = pretties
                 .iter()
                 .position(|pretty| pretty.as_str() == select.as_str())
                 .unwrap();
-            all.get(select).unwrap()
+            proxies.get(select).unwrap()
         };
         client.proxy_set("PROXY", name.as_str()).await?;
         Ok(())

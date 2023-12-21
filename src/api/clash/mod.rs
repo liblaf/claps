@@ -1,6 +1,9 @@
+use std::time::Duration;
+
 use anyhow::Result;
 use reqwest::{IntoUrl, RequestBuilder, Url};
 
+pub mod group;
 pub mod proxies;
 
 #[derive(Debug)]
@@ -16,7 +19,9 @@ impl Client {
         U: IntoUrl,
     {
         Ok(Self {
-            client: reqwest::Client::new(),
+            client: reqwest::Client::builder()
+                .timeout(Duration::from_secs(5))
+                .build()?,
             url: url.into_url()?,
             secret,
         })
