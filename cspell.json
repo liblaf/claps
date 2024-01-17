@@ -1,0 +1,27 @@
+{
+  "words": [
+    "afinet",
+    "choco",
+    "ddns",
+    "flatte",
+    "folderid",
+    "gomod",
+    "indicatif",
+    "liblaf",
+    "netifas",
+    "nointeraction",
+    "swatinem"
+  ],
+  "ignorePaths": ["*-lock.*", "*.lock", "cspell.json"],
+  "dictionaries": [
+    "bash",
+    "cpp",
+    "cpp-legacy",
+    "cpp-refined",
+    "dotnet",
+    "makefile",
+    "npm",
+    "rust"
+  ],
+  "allowCompoundWords": true
+}

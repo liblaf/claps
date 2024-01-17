@@ -3,9 +3,6 @@ name: CI
 on:
   push:
 
-permissions:
-  contents: write
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
 
@@ -47,6 +44,8 @@ jobs:
 
   upload:
     name: Upload Release Assets
+    permissions:
+      contents: write
     needs:
       - build
     if: github.ref == 'refs/heads/main'
