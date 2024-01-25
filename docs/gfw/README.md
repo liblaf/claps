@@ -17,8 +17,6 @@ This document contains the help content for the `gfw` command-line program.
 
 ## `gfw`
 
-Logging flags to `#[command(flatte)]` into your CLI
-
 **Usage:** `gfw [OPTIONS] <COMMAND>`
 
 ###### **Subcommands:**
@@ -142,6 +140,13 @@ Generate tab-completion scripts for your shell
 - `-c`, `--config <CONFIG>`
 
   Default value: `/etc/sing-box/config.json`
+
+- `-d`, `--dns <DNS>`
+- `-t`, `--tun`
+
+  Default value: `false`
+
+  Possible values: `true`, `false`
 
 <hr/>
 

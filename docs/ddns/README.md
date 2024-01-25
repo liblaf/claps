@@ -13,8 +13,6 @@ This document contains the help content for the `ddns` command-line program.
 
 ## `ddns`
 
-Logging flags to `#[command(flatte)]` into your CLI
-
 **Usage:** `ddns [OPTIONS] <COMMAND>`
 
 ###### **Subcommands:**

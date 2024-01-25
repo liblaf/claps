@@ -3,7 +3,6 @@
     "afinet",
     "choco",
     "ddns",
-    "flatte",
     "folderid",
     "gomod",
     "indicatif",
@@ -19,6 +18,7 @@
     "cpp-legacy",
     "cpp-refined",
     "dotnet",
+    "en-gb",
     "makefile",
     "npm",
     "rust"
