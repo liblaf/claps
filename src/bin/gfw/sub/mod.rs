@@ -25,7 +25,7 @@ impl Sub {
             name: item.name().to_string(),
             url: item.notes().map(|s| s.to_string()),
             user_info: match item.notes() {
-                Some(url) => user_info(url).await.log().ok(),
+                Some(url) => user_info(url).await.ok(),
                 None => None,
             },
         })
