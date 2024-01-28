@@ -23,7 +23,7 @@ impl Run for Cmd {
         let client = Client::new(token);
         let records = client.list(&zone, &name).await?;
         let mut builder = Builder::new();
-        builder.set_header(["Name", "Address"]);
+        builder.push_record(["Name", "Address"]);
         records.iter().for_each(|record| {
             builder.push_record([
                 record.name.bold().green().to_string(),

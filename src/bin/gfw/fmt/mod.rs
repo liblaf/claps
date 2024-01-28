@@ -170,7 +170,7 @@ where
 {
     fn fmt_table(&self, fields: &[Field]) -> Table {
         let mut builder = Builder::new();
-        builder.set_header(fields.iter().map(|field| field.as_str()));
+        builder.push_record(fields.iter().map(|field| field.as_str()));
         self.iter().map(|row| row.fmt_row(fields)).for_each(|row| {
             builder.push_record(row);
         });

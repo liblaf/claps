@@ -38,7 +38,7 @@ impl Run for Cmd {
                 let search = self.search.unwrap_or_default();
                 let items = claps::external::bitwarden::list::items(Some(search.as_str()), None)?;
                 let mut builder = Builder::new();
-                builder.set_header(["Name", "Username", "Password", "Notes"]);
+                builder.push_record(["Name", "Username", "Password", "Notes"]);
                 for item in items {
                     match item {
                         Item::Login(login) => {
