@@ -1,6 +1,7 @@
 use anyhow::Result;
 use clap::{Args, Subcommand};
 use colored::Colorize;
+use reqwest::Url;
 
 use claps::api::clash::Client;
 use claps::common::cmd::Run;
@@ -12,6 +13,16 @@ mod set;
 pub(super) struct Cmd {
     #[command(subcommand)]
     sub_cmd: SubCmd,
+    #[command(flatten)]
+    args: CommonArgs,
+}
+
+#[derive(Debug, Args)]
+struct CommonArgs {
+    #[arg(short, long, default_value = "http://127.0.0.1:9090", global = true)]
+    url: Url,
+    #[arg(short, long, global = true)]
+    secret: Option<String>,
 }
 
 #[derive(Debug, Subcommand)]
@@ -24,8 +35,8 @@ enum SubCmd {
 impl Run for Cmd {
     async fn run(self) -> Result<()> {
         match self.sub_cmd {
-            SubCmd::Get(cmd) => cmd.run().await,
-            SubCmd::Set(cmd) => cmd.run().await,
+            SubCmd::Get(cmd) => cmd.run(self.args).await,
+            SubCmd::Set(cmd) => cmd.run(self.args).await,
         }
     }
 }

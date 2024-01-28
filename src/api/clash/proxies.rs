@@ -44,7 +44,7 @@ struct Response {
     proxies: HashMap<String, Proxy>,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Proxy {
     pub all: Option<Vec<String>>,
     pub history: Vec<History>,
@@ -54,7 +54,7 @@ pub struct Proxy {
     pub type_: String,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct History {
     pub delay: u64,
     pub time: String,

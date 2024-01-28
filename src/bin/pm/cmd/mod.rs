@@ -14,11 +14,9 @@ use claps::external::bitwarden::types::Item;
 #[derive(Debug, Parser)]
 #[command(name = env!("CARGO_BIN_NAME"), version, author, styles = STYLES)]
 pub(super) struct Cmd {
-    arg: Option<String>,
-
+    search: Option<String>,
     #[command(subcommand)]
     sub_cmd: Option<SubCmd>,
-
     #[command(flatten)]
     verbosity: Verbosity<InfoLevel>,
 }
@@ -37,8 +35,8 @@ impl Run for Cmd {
                 SubCmd::Complete(cmd) => cmd.run().await,
             },
             None => {
-                let search = self.arg.unwrap_or_default();
-                let items = claps::external::bitwarden::list::items(&search, "")?;
+                let search = self.search.unwrap_or_default();
+                let items = claps::external::bitwarden::list::items(Some(search.as_str()), None)?;
                 let mut builder = Builder::new();
                 builder.set_header(["Name", "Username", "Password", "Notes"]);
                 for item in items {

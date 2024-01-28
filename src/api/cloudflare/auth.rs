@@ -11,6 +11,6 @@ impl Auth for RequestBuilder {
     where
         S: AsRef<str>,
     {
-        self.header("Authorization", format!("Bearer {}", token.as_ref()))
+        self.bearer_auth(token.as_ref())
     }
 }

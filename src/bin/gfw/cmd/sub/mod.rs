@@ -38,6 +38,6 @@ struct CommonArgs {
 impl CommonArgs {
     fn items(&self) -> Result<Vec<Item>> {
         let folder = claps::external::bitwarden::get::folder(&self.folder)?;
-        claps::external::bitwarden::list::items("", &folder.id)
+        claps::external::bitwarden::list::items(None, Some(folder.id.as_str()))
     }
 }

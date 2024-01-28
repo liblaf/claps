@@ -1,11 +1,12 @@
 use anyhow::Result;
 use clap::Args;
 
-use claps::api::cloudflare::Client;
-use claps::common::cmd::Run;
 use colored::Colorize;
 use tabled::builder::Builder;
 use tabled::settings::Style;
+
+use claps::api::cloudflare::Client;
+use claps::common::cmd::Run;
 
 #[derive(Debug, Args)]
 pub(super) struct Cmd {

@@ -3,25 +3,18 @@ use clap::Args;
 use inquire::Select;
 
 use claps::api::clash::Client;
-use claps::common::cmd::Run;
-
-use crate::cmd::api::CommandArgs;
 
 #[derive(Debug, Args)]
 pub(super) struct Cmd {
-    #[command(flatten)]
-    common: CommandArgs,
-
     name: Option<String>,
 }
 
-#[async_trait::async_trait]
-impl Run for Cmd {
-    async fn run(self) -> Result<()> {
-        let client = Client::new(self.common.url, self.common.secret)?;
+impl Cmd {
+    pub async fn run(&self, args: crate::cmd::proxy::CommonArgs) -> Result<()> {
+        let client = Client::new(args.url, args.secret)?;
         let proxies = client.proxies().await?;
         let proxies = proxies.get("PROXY").unwrap().all.as_deref().unwrap();
-        let pretties = crate::cmd::api::proxy::pretty(&client, "PROXY").await?;
+        let pretties = crate::cmd::proxy::pretty(&client, "PROXY").await?;
         let mut filtered_proxies = vec![];
         let mut filtered_pretties = vec![];
         for (proxy, pretty) in proxies.iter().zip(pretties.iter()) {

@@ -18,6 +18,7 @@ where
         .stdin(Stdio::null())
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit());
+    tracing::debug!("{:?}", cmd);
     let status = cmd.status().log()?;
     crate::ensure!(status.success());
     Ok(())

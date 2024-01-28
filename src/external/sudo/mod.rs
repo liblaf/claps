@@ -34,7 +34,7 @@ where
         .stdin(Stdio::piped())
         .stdout(Stdio::null())
         .stderr(Stdio::inherit());
-    tracing::debug!("{:#?}", cmd);
+    tracing::debug!("{:?}", cmd);
     let mut child = cmd.spawn().log()?;
     child
         .stdin

@@ -9,7 +9,7 @@ This document contains the help content for the `pm` command-line program.
 
 ## `pm`
 
-**Usage:** `pm [OPTIONS] [ARG] [COMMAND]`
+**Usage:** `pm [OPTIONS] [SEARCH] [COMMAND]`
 
 ###### **Subcommands:**
 
@@ -17,7 +17,7 @@ This document contains the help content for the `pm` command-line program.
 
 ###### **Arguments:**
 
-- `<ARG>`
+- `<SEARCH>`
 
 ###### **Options:**
 

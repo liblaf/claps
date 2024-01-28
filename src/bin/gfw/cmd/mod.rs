@@ -4,8 +4,8 @@ use clap_verbosity_flag::{InfoLevel, Verbosity};
 use claps::common::cmd::{Run, STYLES};
 use claps::common::log::LogInit;
 
-mod api;
 mod ip;
+mod proxy;
 mod sub;
 
 #[derive(Debug, Parser)]
@@ -20,7 +20,7 @@ pub(super) struct Cmd {
 
 #[derive(Debug, Subcommand)]
 enum SubCmd {
-    Api(api::Cmd),
+    Proxy(proxy::Cmd),
     Complete(claps::common::cmd::complete::Cmd<Cmd>),
     IP(ip::Cmd),
     Sub(sub::Cmd),
@@ -31,7 +31,7 @@ impl Run for Cmd {
     async fn run(self) -> anyhow::Result<()> {
         self.verbose.init();
         match self.sub_cmd {
-            SubCmd::Api(cmd) => cmd.run().await,
+            SubCmd::Proxy(cmd) => cmd.run().await,
             SubCmd::Complete(cmd) => cmd.run().await,
             SubCmd::IP(cmd) => cmd.run().await,
             SubCmd::Sub(cmd) => cmd.run().await,

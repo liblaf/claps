@@ -14,16 +14,17 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn new<U>(url: U, secret: Option<String>) -> Result<Self>
+    pub fn new<U, S>(url: U, secret: Option<S>) -> Result<Self>
     where
         U: IntoUrl,
+        S: Into<String>,
     {
         Ok(Self {
             client: reqwest::Client::builder()
                 .timeout(Duration::from_secs(5))
                 .build()?,
             url: url.into_url()?,
-            secret,
+            secret: secret.map(|secret| secret.into()),
         })
     }
 

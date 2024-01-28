@@ -25,15 +25,15 @@ where
         if let Some(level) = self.log_level() {
             let level = tracing::Level::from_str(level.as_str()).unwrap();
             let builder = tracing_subscriber::fmt().pretty().with_max_level(level);
-            if level > tracing::Level::INFO {
-                builder.init();
-            } else {
+            if level < tracing::Level::DEBUG {
                 builder
                     .with_file(false)
                     .with_line_number(false)
                     .with_target(false)
                     .without_time()
                     .init();
+            } else {
+                builder.init();
             }
         }
     }
