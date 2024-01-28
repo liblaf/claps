@@ -13,6 +13,14 @@ where
     crate::external::bitwarden::bw("get", args)
 }
 
+pub fn username(id: &str) -> Result<String> {
+    get(["username", id])
+}
+
+pub fn password(id: &str) -> Result<String> {
+    get(["password", id])
+}
+
 pub fn notes(id: &str) -> Result<String> {
     get(["notes", id])
 }

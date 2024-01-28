@@ -4,7 +4,7 @@ use std::str::FromStr;
 use clap_verbosity_flag::{LogLevel, Verbosity};
 
 pub trait LogInit {
-    fn init(self);
+    fn init(&self);
 }
 
 pub trait LogError {
@@ -21,7 +21,7 @@ impl<L> LogInit for Verbosity<L>
 where
     L: LogLevel,
 {
-    fn init(self) {
+    fn init(&self) {
         if let Some(level) = self.log_level() {
             let level = tracing::Level::from_str(level.as_str()).unwrap();
             let builder = tracing_subscriber::fmt().pretty().with_max_level(level);

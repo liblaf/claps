@@ -4,7 +4,7 @@ vars:
   HOST:
     sh: |
       rustc --version --verbose | sed --quiet "s/host: //p"
-  TARGETS: ddns gfw pm
+  TARGETS: alist-cli ddns gfw pm
 
 tasks:
   default:
