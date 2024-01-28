@@ -10,6 +10,6 @@ pub trait Run {
 }
 
 pub const STYLES: Styles = Styles::styled()
-    .header(AnsiColor::Blue.on_default().bold())
+    .header(AnsiColor::Green.on_default().bold())
     .literal(AnsiColor::Cyan.on_default().bold())
     .placeholder(AnsiColor::Magenta.on_default().bold());
