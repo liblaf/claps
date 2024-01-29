@@ -12,6 +12,8 @@ pub(super) struct Cmd {
     path: PathBuf,
     #[arg(short, long, default_value = "1")]
     depth: i64,
+    #[arg(short, long)]
+    refresh: bool,
 }
 
 impl Cmd {
@@ -20,15 +22,23 @@ impl Cmd {
         client
             .auth_login(args.username()?.as_str(), args.password()?.as_str())
             .await?;
-        println!("{}", tree(&client, self.path.as_path(), self.depth).await?);
+        println!(
+            "{}",
+            tree(&client, self.path.as_path(), self.depth, self.refresh).await?
+        );
         Ok(())
     }
 }
 
 #[async_recursion::async_recursion]
-async fn tree(client: &Client, path: &'async_recursion Path, depth: i64) -> Result<Tree> {
+async fn tree(
+    client: &Client,
+    path: &'async_recursion Path,
+    depth: i64,
+    refresh: bool,
+) -> Result<Tree> {
     let data = client
-        .fs_list(Some(path.to_str().unwrap()), None, None)
+        .fs_list(Some(path.to_str().unwrap()), None, Some(refresh))
         .await
         .unwrap();
     let children = futures::future::join_all(
@@ -37,7 +47,7 @@ async fn tree(client: &Client, path: &'async_recursion Path, depth: i64) -> Resu
             .map(|c| async {
                 let path = path.join(c.name.as_str());
                 if depth > 1 && c.is_dir {
-                    return tree(client, path.as_path(), depth - 1).await.ok();
+                    return tree(client, path.as_path(), depth - 1, refresh).await.ok();
                 }
                 Some(Tree::new(path.as_path(), c.is_dir))
             })

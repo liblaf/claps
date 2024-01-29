@@ -2,7 +2,7 @@ use std::path::Path;
 
 use anyhow::Result;
 use reqwest::Body;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::api::alist::{Client, JsonOrLog};
 use crate::common::log::LogResult;
@@ -36,8 +36,27 @@ impl Client {
     }
 }
 
-#[derive(Debug, Deserialize)]
-struct Response {
-    code: u16,
-    message: String,
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Response {
+    /// 状态码
+    pub code: i64,
+    // pub data: Data,
+    pub data: Option<Data>,
+    /// 信息
+    pub message: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Data {
+    pub task: Task,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Task {
+    pub error: String,
+    pub id: String,
+    pub name: String,
+    pub progress: i64,
+    pub state: i64,
+    pub status: String,
 }

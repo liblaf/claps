@@ -58,13 +58,27 @@ Generate tab-completion scripts for your shell
 
   Default value: `1`
 
+- `-r`, `--refresh`
+
+  Possible values: `true`, `false`
+
 ## `alist-cli upload`
 
-**Usage:** `alist-cli upload <PATH>`
+**Usage:** `alist-cli upload [OPTIONS] <PATH>`
 
 ###### **Arguments:**
 
 - `<PATH>`
+
+###### **Options:**
+
+- `--prefix <PREFIX>`
+
+  Default value: `/img`
+
+- `--no-refresh`
+
+  Possible values: `true`, `false`
 
 <hr/>
 
