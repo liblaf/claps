@@ -4,7 +4,7 @@ use anyhow::Result;
 use reqwest::Body;
 use serde::Deserialize;
 
-use crate::api::alist::Client;
+use crate::api::alist::{Client, JsonOrLog};
 use crate::common::log::LogResult;
 
 impl Client {
@@ -29,7 +29,7 @@ impl Client {
         let request = request.body(body);
         let response = request.send().await.log()?;
         let response = response.error_for_status().log()?;
-        let response: Response = response.json().await.log()?;
+        let response: Response = response.json_or_log().await?;
         crate::ensure!(response.code == 200);
         crate::ensure!(response.message == "success");
         Ok(())

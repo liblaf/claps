@@ -6,6 +6,7 @@ This document contains the help content for the `alist-cli` command-line program
 
 - [`alist-cli`↴](#alist-cli)
 - [`alist-cli complete`↴](#alist-cli-complete)
+- [`alist-cli list`↴](#alist-cli-list)
 - [`alist-cli upload`↴](#alist-cli-upload)
 
 ## `alist-cli`
@@ -15,6 +16,7 @@ This document contains the help content for the `alist-cli` command-line program
 ###### **Subcommands:**
 
 - `complete` — Generate tab-completion scripts for your shell
+- `list` —
 - `upload` —
 
 ###### **Options:**
@@ -39,6 +41,22 @@ Generate tab-completion scripts for your shell
 - `<SHELL>`
 
   Possible values: `markdown`, `bash`, `elvish`, `fish`, `powershell`, `zsh`
+
+## `alist-cli list`
+
+**Usage:** `alist-cli list [OPTIONS] [PATH]`
+
+###### **Arguments:**
+
+- `<PATH>`
+
+  Default value: `/`
+
+###### **Options:**
+
+- `-d`, `--depth <DEPTH>`
+
+  Default value: `1`
 
 ## `alist-cli upload`
 

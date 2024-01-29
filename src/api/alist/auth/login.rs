@@ -1,7 +1,7 @@
 use anyhow::Result;
 use serde::Deserialize;
 
-use crate::api::alist::Client;
+use crate::api::alist::{Client, JsonOrLog};
 use crate::common::log::LogResult;
 
 impl Client {
@@ -14,7 +14,7 @@ impl Client {
         }));
         let response = request.send().await.log()?;
         let response = response.error_for_status().log()?;
-        let response: Response = response.json().await.log()?;
+        let response: Response = response.json_or_log().await?;
         crate::ensure!(response.code == 200);
         crate::ensure!(response.message == "success");
         self.token = Some(response.data.token);
@@ -22,9 +22,11 @@ impl Client {
     }
 }
 
+type Code = u16;
+
 #[derive(Debug, Deserialize)]
 struct Response {
-    code: u16,
+    code: Code,
     message: String,
     data: ResponseData,
 }

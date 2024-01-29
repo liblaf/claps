@@ -34,17 +34,14 @@ impl Cmd {
         } else {
             file_path
         };
-        let content_type = match self.path.extension() {
-            Some(extension) => match extension.to_str().unwrap() {
-                "jpg" | "jpeg" => "image/jpeg",
-                "png" => "image/png",
-                "gif" => "image/gif",
-                _ => "application/octet-stream",
-            },
-            None => "application/octet-stream",
-        };
+        let content_type = mime_guess::from_path(self.path.as_path()).first_or_octet_stream();
         client
-            .fs_put(file_path.as_path(), content_type, body.len(), body)
+            .fs_put(
+                file_path.as_path(),
+                content_type.essence_str(),
+                body.len(),
+                body,
+            )
             .await?;
         tracing::info!("Upload: {} -> {}", self.path.display(), file_path.display());
         Ok(())

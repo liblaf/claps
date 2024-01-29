@@ -5,6 +5,7 @@ use clap_verbosity_flag::{InfoLevel, Verbosity};
 use claps::common::cmd::{Run, STYLES};
 use claps::common::log::LogInit;
 
+mod list;
 mod upload;
 
 #[derive(Debug, Parser)]
@@ -20,17 +21,18 @@ pub(super) struct Cmd {
 
 #[derive(Debug, Args)]
 struct CommonArgs {
-    #[arg(long, default_value = "https://alist.liblaf.me/api")]
+    #[arg(long, default_value = "https://alist.liblaf.me/api", global = true)]
     url: String,
-    #[arg(short, long)]
+    #[arg(short, long, global = true)]
     username: Option<String>,
-    #[arg(short, long)]
+    #[arg(short, long, global = true)]
     password: Option<String>,
 }
 
 #[derive(Debug, Subcommand)]
 enum SubCmd {
     Complete(claps::common::cmd::complete::Cmd<Cmd>),
+    List(list::Cmd),
     Upload(upload::Cmd),
 }
 
@@ -40,6 +42,7 @@ impl Run for Cmd {
         self.verbose.init();
         match self.sub_cmd {
             SubCmd::Complete(cmd) => cmd.run().await?,
+            SubCmd::List(cmd) => cmd.run(self.args).await?,
             SubCmd::Upload(cmd) => cmd.run(self.args).await?,
         }
         Ok(())
