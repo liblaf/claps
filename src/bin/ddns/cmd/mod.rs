@@ -17,6 +17,8 @@ pub(super) struct Cmd {
     #[command(subcommand)]
     sub_cmd: SubCmd,
     #[command(flatten)]
+    args: CommonArgs,
+    #[command(flatten)]
     verbose: Verbosity<InfoLevel>,
 }
 
@@ -35,21 +37,27 @@ impl Run for Cmd {
         self.verbose.init();
         match self.sub_cmd {
             SubCmd::Complete(cmd) => cmd.run().await,
-            SubCmd::Delete(cmd) => cmd.run().await,
+            SubCmd::Delete(cmd) => cmd.run(self.args).await,
             SubCmd::Install(cmd) => cmd.run().await,
-            SubCmd::List(cmd) => cmd.run().await,
-            SubCmd::Update(cmd) => cmd.run().await,
+            SubCmd::List(cmd) => cmd.run(self.args).await,
+            SubCmd::Update(cmd) => cmd.run(self.args).await,
         }
     }
 }
 
 #[derive(Debug, Args)]
 struct CommonArgs {
-    #[clap(short, long, env)]
+    #[clap(short, long, env, global = true)]
     name: Option<String>,
-    #[clap(short, long, env)]
+    #[clap(short, long, env, global = true)]
     token: Option<String>,
-    #[clap(short, long, env, default_value = "919b04037636d3b4bbc0af135eaccdfa")]
+    #[clap(
+        short,
+        long,
+        env,
+        default_value = "919b04037636d3b4bbc0af135eaccdfa",
+        global = true
+    )]
     zone: String,
 }
 

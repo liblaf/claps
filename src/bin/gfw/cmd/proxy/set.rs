@@ -4,13 +4,15 @@ use inquire::Select;
 
 use claps::api::clash::Client;
 
+use super::CommonArgs;
+
 #[derive(Debug, Args)]
 pub(super) struct Cmd {
     name: Option<String>,
 }
 
 impl Cmd {
-    pub async fn run(&self, args: crate::cmd::proxy::CommonArgs) -> Result<()> {
+    pub async fn run(&self, args: CommonArgs) -> Result<()> {
         let client = Client::new(args.url, args.secret)?;
         let proxies = client.proxies().await?;
         let proxies = proxies.get("PROXY").unwrap().all.as_deref().unwrap();

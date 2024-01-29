@@ -5,20 +5,17 @@ use anyhow::Result;
 use clap::Args;
 
 use claps::api::cloudflare::Client;
-use claps::common::cmd::Run;
+
+use super::CommonArgs;
 
 #[derive(Debug, Args)]
-pub(super) struct Cmd {
-    #[command(flatten)]
-    args: super::CommonArgs,
-}
+pub(super) struct Cmd {}
 
-#[async_trait::async_trait]
-impl Run for Cmd {
-    async fn run(self) -> Result<()> {
-        let name = self.args.name()?;
-        let token = self.args.token()?;
-        let zone = self.args.zone()?;
+impl Cmd {
+    pub async fn run(self, args: CommonArgs) -> Result<()> {
+        let name = args.name()?;
+        let token = args.token()?;
+        let zone = args.zone()?;
         let client = Client::new(token);
         let records = client.list(&zone, &name).await?;
         let mut local_addrs = crate::ip::addrs()?;

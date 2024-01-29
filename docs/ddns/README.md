@@ -25,6 +25,12 @@ This document contains the help content for the `ddns` command-line program.
 
 ###### **Options:**
 
+- `-n`, `--name <NAME>`
+- `-t`, `--token <TOKEN>`
+- `-z`, `--zone <ZONE>`
+
+  Default value: `919b04037636d3b4bbc0af135eaccdfa`
+
 - `-v`, `--verbose` — Increase logging verbosity
 - `-q`, `--quiet` — Decrease logging verbosity
 
@@ -42,15 +48,7 @@ Generate tab-completion scripts for your shell
 
 ## `ddns delete`
 
-**Usage:** `ddns delete [OPTIONS]`
-
-###### **Options:**
-
-- `-n`, `--name <NAME>`
-- `-t`, `--token <TOKEN>`
-- `-z`, `--zone <ZONE>`
-
-  Default value: `919b04037636d3b4bbc0af135eaccdfa`
+**Usage:** `ddns delete`
 
 ## `ddns install`
 
@@ -58,27 +56,11 @@ Generate tab-completion scripts for your shell
 
 ## `ddns list`
 
-**Usage:** `ddns list [OPTIONS]`
-
-###### **Options:**
-
-- `-n`, `--name <NAME>`
-- `-t`, `--token <TOKEN>`
-- `-z`, `--zone <ZONE>`
-
-  Default value: `919b04037636d3b4bbc0af135eaccdfa`
+**Usage:** `ddns list`
 
 ## `ddns update`
 
-**Usage:** `ddns update [OPTIONS]`
-
-###### **Options:**
-
-- `-n`, `--name <NAME>`
-- `-t`, `--token <TOKEN>`
-- `-z`, `--zone <ZONE>`
-
-  Default value: `919b04037636d3b4bbc0af135eaccdfa`
+**Usage:** `ddns update`
 
 <hr/>
 
