@@ -100,11 +100,9 @@ Generate tab-completion scripts for your shell
 
   Default value: `the Great Wall`
 
-- `-f`, `--fields <FIELDS>`
+- `-u`, `--url`
 
-  Default values: `name`, `download`, `upload`, `total`, `expire`
-
-  Possible values: `name`, `url`, `download`, `upload`, `total`, `expire`
+  Possible values: `true`, `false`
 
 ## `gfw sub update`
 

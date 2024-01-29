@@ -11,18 +11,9 @@ use crate::sub::Sub;
 pub(super) struct Cmd {
     #[command(flatten)]
     args: super::CommonArgs,
-
-    #[arg(short, long, value_enum, default_values_t = FIELDS)]
-    fields: Vec<Field>,
+    #[arg(short, long)]
+    url: bool,
 }
-
-const FIELDS: &[Field] = &[
-    Field::Name,
-    Field::Download,
-    Field::Upload,
-    Field::Total,
-    Field::Expire,
-];
 
 #[async_trait::async_trait]
 impl Run for Cmd {
@@ -33,7 +24,11 @@ impl Run for Cmd {
             .into_iter()
             .filter_map(|sub| sub.log().ok())
             .collect();
-        let table = subs.fmt_table(&self.fields);
+        let table = subs.fmt_table(if self.url {
+            [Field::Name, Field::Url].as_ref()
+        } else {
+            [Field::Name, Field::Traffic, Field::Expire].as_ref()
+        });
         println!("{}", table);
         Ok(())
     }

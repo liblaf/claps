@@ -13,16 +13,12 @@ use claps::common::log::LogResult;
 pub(super) struct Cmd {
     #[command(flatten)]
     args: super::CommonArgs,
-
     #[arg(short, long, default_value = "https://gfw.liblaf.me")]
     api: String,
-
     #[arg(short, long, default_value = "/etc/sing-box/config.json")]
     config: PathBuf,
-
     #[arg(short, long)]
     dns: Option<String>,
-
     #[arg(short, long, default_value_t = false)]
     tun: bool,
 }

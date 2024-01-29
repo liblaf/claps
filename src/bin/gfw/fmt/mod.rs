@@ -22,6 +22,7 @@ pub trait FmtRow {
                 Field::Download => self.fmt_download(),
                 Field::Upload => self.fmt_upload(),
                 Field::Total => self.fmt_total(),
+                Field::Traffic => self.fmt_traffic(),
                 Field::Expire => self.fmt_expire(),
             })
             .collect()
@@ -77,10 +78,27 @@ pub trait FmtRow {
         }
     }
 
+    fn fmt_traffic(&self) -> String {
+        match (self.download(), self.upload(), self.total()) {
+            (Some(download), Some(upload), Some(total)) => format!(
+                "{} + {} = {} / {}",
+                HumanBytes(download),
+                HumanBytes(upload),
+                HumanBytes(download + upload),
+                HumanBytes(total)
+            )
+            .bold()
+            .color(self.color_traffic())
+            .to_string(),
+            _ => String::new(),
+        }
+    }
+
     fn fmt_expire(&self) -> String {
         match self.expire() {
             Some(expire) => expire
                 .with_timezone(&Local)
+                .format("%F %T")
                 .to_string()
                 .bold()
                 .color(self.color_date())
@@ -148,6 +166,7 @@ pub enum Field {
     Download,
     Upload,
     Total,
+    Traffic,
     Expire,
 }
 
@@ -159,6 +178,7 @@ impl Field {
             Field::Download => "Download",
             Field::Upload => "Upload",
             Field::Total => "Total",
+            Field::Traffic => "Traffic",
             Field::Expire => "Expire",
         }
     }

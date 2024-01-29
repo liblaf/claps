@@ -13,7 +13,6 @@ mod sub;
 pub(super) struct Cmd {
     #[command(subcommand)]
     sub_cmd: SubCmd,
-
     #[command(flatten)]
     verbose: Verbosity<InfoLevel>,
 }
