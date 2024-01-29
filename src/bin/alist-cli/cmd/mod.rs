@@ -6,6 +6,7 @@ use claps::common::cmd::{Run, STYLES};
 use claps::common::log::LogInit;
 
 mod list;
+mod remove;
 mod upload;
 
 #[derive(Debug, Parser)]
@@ -34,6 +35,7 @@ enum SubCmd {
     Complete(claps::common::cmd::complete::Cmd<Cmd>),
     List(list::Cmd),
     Upload(upload::Cmd),
+    Remove(remove::Cmd),
 }
 
 #[async_trait::async_trait]
@@ -44,6 +46,7 @@ impl Run for Cmd {
             SubCmd::Complete(cmd) => cmd.run().await?,
             SubCmd::List(cmd) => cmd.run(self.args).await?,
             SubCmd::Upload(cmd) => cmd.run(self.args).await?,
+            SubCmd::Remove(cmd) => cmd.run(self.args).await?,
         }
         Ok(())
     }

@@ -8,6 +8,7 @@ This document contains the help content for the `alist-cli` command-line program
 - [`alist-cli complete`↴](#alist-cli-complete)
 - [`alist-cli list`↴](#alist-cli-list)
 - [`alist-cli upload`↴](#alist-cli-upload)
+- [`alist-cli remove`↴](#alist-cli-remove)
 
 ## `alist-cli`
 
@@ -18,6 +19,7 @@ This document contains the help content for the `alist-cli` command-line program
 - `complete` — Generate tab-completion scripts for your shell
 - `list` —
 - `upload` —
+- `remove` —
 
 ###### **Options:**
 
@@ -75,6 +77,20 @@ Generate tab-completion scripts for your shell
 - `--prefix <PREFIX>`
 
   Default value: `/img`
+
+- `--no-refresh`
+
+  Possible values: `true`, `false`
+
+## `alist-cli remove`
+
+**Usage:** `alist-cli remove [OPTIONS] [PATH]...`
+
+###### **Arguments:**
+
+- `<PATH>`
+
+###### **Options:**
 
 - `--no-refresh`
 

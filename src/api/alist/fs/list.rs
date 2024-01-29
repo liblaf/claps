@@ -56,7 +56,8 @@ pub struct Response {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Data {
     /// 内容
-    pub content: Vec<Content>,
+    // pub content: Vec<Content>,
+    pub content: Option<Vec<Content>>,
     pub provider: String,
     /// 说明
     pub readme: String,

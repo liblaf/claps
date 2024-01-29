@@ -43,6 +43,7 @@ async fn tree(
         .unwrap();
     let children = futures::future::join_all(
         data.content
+            .unwrap_or_default()
             .iter()
             .map(|c| async {
                 let path = path.join(c.name.as_str());
