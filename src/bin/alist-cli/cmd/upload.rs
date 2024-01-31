@@ -9,7 +9,7 @@ use claps::api::alist::Client;
 #[derive(Debug, Args)]
 pub(super) struct Cmd {
     path: PathBuf,
-    #[arg(long, default_value = "/img")]
+    #[arg(long, default_value = "/public/img")]
     prefix: PathBuf,
     #[arg(long)]
     no_refresh: bool,
@@ -21,7 +21,7 @@ impl Cmd {
         let file_path = self
             .prefix
             .join(time.year().to_string().as_str())
-            .join(time.format("%F-%H%M%S").to_string().as_str());
+            .join(time.format("%FT%H%M%S").to_string().as_str());
         let file_path = if let Some(extension) = self.path.extension() {
             let extension = extension.to_str().unwrap();
             file_path.with_extension(extension)
@@ -43,6 +43,11 @@ impl Cmd {
             )
             .await?;
         tracing::info!("Upload: {} -> {}", self.path.display(), file_path.display());
+        println!(
+            "https://cdn.liblaf.me/img/{}/{}",
+            time.format("%Y/%m/%d").to_string(),
+            file_path.file_name().unwrap().to_str().unwrap()
+        );
         if !self.no_refresh {
             client
                 .fs_list(

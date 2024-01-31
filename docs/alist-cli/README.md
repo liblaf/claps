@@ -76,7 +76,7 @@ Generate tab-completion scripts for your shell
 
 - `--prefix <PREFIX>`
 
-  Default value: `/img`
+  Default value: `/public/img`
 
 - `--no-refresh`
 
