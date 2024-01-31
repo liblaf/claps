@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.0](https://github.com/liblaf/claps/compare/v0.1.0...v0.2.0) (2024-01-31)
+
+
+### Features
+
+* add alist-cli to the project ([d6c43da](https://github.com/liblaf/claps/commit/d6c43da88295446eb1dee7e469af8f4383d448f0))
+* add async-recursion and mime_guess dependencies ([8d3647f](https://github.com/liblaf/claps/commit/8d3647f7ace890afd54d4f552df28e906ab52712))
+* add global options for ddns commands ([6c5829f](https://github.com/liblaf/claps/commit/6c5829ffe4faebd3aa44ec2400e11dd61e7e800c))
+* add options for refreshing and prefix in alist-cli upload command ([ff9553b](https://github.com/liblaf/claps/commit/ff9553bf62f670a880d934458cdf6fcd017cdd49))
+* add remove command to alist-cli ([1d416ea](https://github.com/liblaf/claps/commit/1d416ea0de38b15d37333c74add9b5226be6c1d3))
+* add support for displaying traffic information in the list command ([e4ea19a](https://github.com/liblaf/claps/commit/e4ea19a8ea0a10cba6c30a9fc816193077b8b15f))
+* change header color to green in STYLES constant ([24cbc31](https://github.com/liblaf/claps/commit/24cbc31db6bea7853f9ba4177c1be85bfb1e8c2e))
+* update command names and structure for `gfw` CLI ([ede2f0d](https://github.com/liblaf/claps/commit/ede2f0d918a315d49a88fd2c92534111ddf6bb52))
+* update default image path to /public/img ([a9ae595](https://github.com/liblaf/claps/commit/a9ae59521d5d4600e96359b20d26ad0027971616))
+* update tabled dependency to version 0.15.0 ([24fb3f7](https://github.com/liblaf/claps/commit/24fb3f7ea60c6c29734a050e95a35f709f9e6401))
+
 ## [0.1.0](https://github.com/liblaf/claps/compare/v0.0.0...v0.1.0) (2024-01-26)
 
 ### Features
