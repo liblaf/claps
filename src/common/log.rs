@@ -1,6 +1,8 @@
 use std::panic::Location;
 
 use clap_verbosity_flag::Verbosity;
+use reqwest::Response;
+use serde::de::DeserializeOwned;
 
 pub trait LogInit {
     fn init(&self);
@@ -20,7 +22,11 @@ where
                 clap_verbosity_flag::Level::Debug => builder.with_max_level(tracing::Level::DEBUG),
                 clap_verbosity_flag::Level::Trace => builder.with_max_level(tracing::Level::TRACE),
             };
-            builder.init();
+            if level < clap_verbosity_flag::Level::Debug {
+                builder.without_time().init();
+            } else {
+                builder.init();
+            }
         }
     }
 }
@@ -71,6 +77,33 @@ where
 {
     #[track_caller]
     fn log(self) -> anyhow::Result<T> {
-        self.map_err(|e| e.log())
+        match self {
+            Ok(result) => Ok(result),
+            Err(e) => Err(e.log()),
+        }
+    }
+}
+
+pub trait LogJson {
+    #[track_caller]
+    async fn json_log<T>(self) -> anyhow::Result<T>
+    where
+        T: DeserializeOwned;
+}
+
+impl LogJson for Response {
+    #[track_caller]
+    async fn json_log<T>(self) -> anyhow::Result<T>
+    where
+        T: DeserializeOwned,
+    {
+        let text = self.text().await.log()?;
+        match serde_json::from_str::<T>(text.as_str()).log() {
+            Ok(result) => Ok(result),
+            Err(e) => {
+                tracing::error!({ text = text.as_str() }, "{}", e);
+                Err(e)
+            }
+        }
     }
 }

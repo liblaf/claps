@@ -1,10 +1,8 @@
 use anyhow::Result;
 use serde::Deserialize;
 
-use crate::api::cloudflare::Client;
+use crate::api::cloudflare::{Client, DNSRecord};
 use crate::common::log::LogResult;
-
-use super::DNSRecord;
 
 impl Client {
     pub async fn delete(&self, record: &DNSRecord) -> Result<()> {

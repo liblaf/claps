@@ -6,10 +6,11 @@ use tabled::settings::peaker::PriorityMax;
 use tabled::settings::{Color, Style, Width};
 
 use claps::cmd::bw::types::Item;
+use claps::common::cmd::STYLES;
 use claps::common::log::{LogInit, LogResult};
 
 #[derive(Parser)]
-#[command(name = env!("CARGO_BIN_NAME"), version, author, about)]
+#[command(name = env!("CARGO_BIN_NAME"), version, author, about, styles = STYLES)]
 pub struct Cmd {
     #[command(subcommand)]
     sub_cmd: Option<SubCmd>,
