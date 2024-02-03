@@ -17,7 +17,7 @@ impl Client {
                     password: None,
                     path: path.map(|s| s.to_string()),
                     per_page: None,
-                    refresh: refresh,
+                    refresh,
                 });
             let response = request.send().await.log()?;
             let response = response.error_for_status().log()?;

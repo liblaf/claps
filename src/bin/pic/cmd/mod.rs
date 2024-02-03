@@ -7,6 +7,7 @@ use claps::common::cmd::STYLES;
 use claps::common::log::LogInit;
 
 mod list;
+mod upload;
 
 #[derive(Parser)]
 #[command(name = env!("CARGO_BIN_NAME"), version, author, about, styles = STYLES)]
@@ -23,6 +24,7 @@ pub struct Cmd {
 enum SubCmd {
     Complete(claps::common::cmd::complete::Cmd),
     List(list::Cmd),
+    Upload(upload::Cmd),
 }
 
 #[derive(Args)]
@@ -41,6 +43,7 @@ impl Cmd {
         match self.sub_cmd {
             SubCmd::Complete(cmd) => cmd.run(Cmd::command()),
             SubCmd::List(cmd) => cmd.run(self.args).await,
+            SubCmd::Upload(cmd) => cmd.run(self.args).await,
         }
     }
 }
