@@ -1,34 +1,30 @@
 use anyhow::Result;
 use clap::Args;
-
-use colored::Colorize;
 use tabled::builder::Builder;
-use tabled::settings::Style;
+use tabled::settings::object::Columns;
+use tabled::settings::{Color, Style};
 
 use claps::api::cloudflare::Client;
 
-use super::CommonArgs;
+use crate::cmd::GlobalArgs;
 
-#[derive(Debug, Args)]
-pub(super) struct Cmd {}
+#[derive(Args)]
+pub struct Cmd {}
 
 impl Cmd {
-    pub async fn run(self, args: CommonArgs) -> Result<()> {
-        let name = args.name()?;
-        let token = args.token()?;
-        let zone = args.zone()?;
-        let client = Client::new(token);
-        let records = client.list(&zone, &name).await?;
-        let mut builder = Builder::new();
-        builder.push_record(["Name", "Address"]);
-        records.iter().for_each(|record| {
-            builder.push_record([
-                record.name.bold().green().to_string(),
-                record.content.bold().blue().to_string(),
-            ]);
-        });
-        let mut table = builder.build();
-        table.with(Style::rounded());
+    pub async fn run(self, args: GlobalArgs) -> Result<()> {
+        let mut table = Builder::new();
+        table.push_record(["Name", "Type", "Content"]);
+        let client = Client::new(args.token().await?.as_str(), args.zone.as_str());
+        let records = client.list(args.name()?.as_str()).await?;
+        for record in records {
+            table.push_record([record.name, record.type_, record.content]);
+        }
+        let mut table = table.build();
+        table
+            .with(Style::rounded())
+            .modify(Columns::single(0), Color::BOLD | Color::FG_GREEN)
+            .modify(Columns::single(1), Color::BOLD | Color::FG_BLUE);
         println!("{}", table);
         Ok(())
     }

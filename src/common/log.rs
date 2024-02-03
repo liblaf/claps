@@ -1,45 +1,36 @@
 use std::panic::Location;
-use std::str::FromStr;
 
-use clap_verbosity_flag::{LogLevel, Verbosity};
+use clap_verbosity_flag::Verbosity;
 
 pub trait LogInit {
     fn init(&self);
 }
 
-pub trait LogError {
-    #[track_caller]
-    fn log(self) -> anyhow::Error;
-}
-
-pub trait LogResult<T> {
-    #[track_caller]
-    fn log(self) -> anyhow::Result<T>;
-}
-
 impl<L> LogInit for Verbosity<L>
 where
-    L: LogLevel,
+    L: clap_verbosity_flag::LogLevel,
 {
     fn init(&self) {
         if let Some(level) = self.log_level() {
-            let level = tracing::Level::from_str(level.as_str()).unwrap();
-            let builder = tracing_subscriber::fmt().pretty().with_max_level(level);
-            if level < tracing::Level::DEBUG {
-                builder
-                    .with_file(false)
-                    .with_line_number(false)
-                    .with_target(false)
-                    .without_time()
-                    .init();
-            } else {
-                builder.init();
-            }
+            let builder = tracing_subscriber::fmt().with_writer(std::io::stderr);
+            let builder = match level {
+                clap_verbosity_flag::Level::Error => builder.with_max_level(tracing::Level::ERROR),
+                clap_verbosity_flag::Level::Warn => builder.with_max_level(tracing::Level::WARN),
+                clap_verbosity_flag::Level::Info => builder.with_max_level(tracing::Level::INFO),
+                clap_verbosity_flag::Level::Debug => builder.with_max_level(tracing::Level::DEBUG),
+                clap_verbosity_flag::Level::Trace => builder.with_max_level(tracing::Level::TRACE),
+            };
+            builder.init();
         }
     }
 }
 
-impl<E> LogError for E
+pub trait LogError<E> {
+    #[track_caller]
+    fn log(self) -> anyhow::Error;
+}
+
+impl<E> LogError<E> for E
 where
     E: Into<anyhow::Error>,
 {
@@ -56,7 +47,7 @@ where
             .join("\n");
         if !sources.is_empty() {
             message += "\nCaused by:\n";
-            message += &sources;
+            message += sources.as_str();
             message += "\n";
         }
         let location = Location::caller();
@@ -69,15 +60,17 @@ where
     }
 }
 
-impl<T, E> LogResult<T> for std::result::Result<T, E>
+pub trait LogResult<T> {
+    #[track_caller]
+    fn log(self) -> anyhow::Result<T>;
+}
+
+impl<T, E> LogResult<T> for Result<T, E>
 where
-    E: Into<anyhow::Error>,
+    E: LogError<E>,
 {
     #[track_caller]
     fn log(self) -> anyhow::Result<T> {
-        match self {
-            Ok(t) => Ok(t),
-            Err(e) => Err(e.log()),
-        }
+        self.map_err(|e| e.log())
     }
 }

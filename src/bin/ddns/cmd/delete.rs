@@ -3,21 +3,20 @@ use clap::Args;
 
 use claps::api::cloudflare::Client;
 
-use super::CommonArgs;
+use crate::cmd::GlobalArgs;
 
-#[derive(Debug, Args)]
-pub(super) struct Cmd {}
+#[derive(Args)]
+pub struct Cmd {}
 
 impl Cmd {
-    pub async fn run(self, args: CommonArgs) -> Result<()> {
-        let name = args.name()?;
-        let token = args.token()?;
-        let zone = args.zone()?;
-        let client = Client::new(token);
-        let records = client.list(&zone, &name).await?;
-        for record in records {
-            client.delete(&zone, &record).await?;
-        }
+    pub async fn run(self, args: GlobalArgs) -> Result<()> {
+        let client = Client::new(args.token().await?.as_str(), args.zone.as_str());
+        let records = client.list(args.name()?.as_str()).await?;
+        let jobs = records.iter().map(|r| client.delete(r)).collect::<Vec<_>>();
+        futures::future::join_all(jobs)
+            .await
+            .into_iter()
+            .collect::<Result<Vec<_>>>()?;
         Ok(())
     }
 }

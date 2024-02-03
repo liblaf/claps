@@ -1,34 +1,39 @@
-use std::marker::PhantomData;
-
 use anyhow::Result;
 use clap::builder::PossibleValue;
-use clap::{Args, CommandFactory, ValueEnum};
+use clap::{Args, Command, ValueEnum};
 use clap_complete::Shell;
+use clap_mangen::Man;
 
-use crate::common::cmd::Run;
+use crate::common::log::LogResult;
 
-/// Generate tab-completion scripts for your shell
-#[derive(Debug, Args)]
-pub struct Cmd<C>
-where
-    C: CommandFactory + Send + Sync,
-{
+#[derive(Args)]
+pub struct Cmd {
     shell: Generator,
-
-    #[arg(skip)]
-    phantom: PhantomData<C>,
 }
 
-#[derive(Clone, Debug)]
+impl Cmd {
+    pub fn run(&self, mut cmd: Command) -> Result<()> {
+        match self.shell {
+            Generator::Man => Man::new(cmd).render(&mut std::io::stdout()).log()?,
+            Generator::Shell(shell) => {
+                let name = cmd.get_name().to_string();
+                clap_complete::generate(shell, &mut cmd, name, &mut std::io::stdout())
+            }
+        }
+        Ok(())
+    }
+}
+
+#[derive(Clone)]
 enum Generator {
-    Markdown,
+    Man,
     Shell(Shell),
 }
 
 impl ValueEnum for Generator {
     fn value_variants<'a>() -> &'a [Self] {
         &[
-            Self::Markdown,
+            Self::Man,
             Self::Shell(Shell::Bash),
             Self::Shell(Shell::Elvish),
             Self::Shell(Shell::Fish),
@@ -39,30 +44,8 @@ impl ValueEnum for Generator {
 
     fn to_possible_value(&self) -> Option<PossibleValue> {
         match self {
-            Self::Markdown => Some(PossibleValue::new("markdown")),
+            Self::Man => Some(PossibleValue::new("man")),
             Self::Shell(shell) => shell.to_possible_value(),
         }
-    }
-}
-
-#[async_trait::async_trait]
-impl<C> Run for Cmd<C>
-where
-    C: CommandFactory + Send + Sync,
-{
-    async fn run(self) -> Result<()> {
-        match self.shell {
-            Generator::Markdown => clap_markdown::print_help_markdown::<C>(),
-            Generator::Shell(shell) => {
-                let cmd = &mut C::command();
-                clap_complete::generate(
-                    shell,
-                    cmd,
-                    cmd.get_name().to_string(),
-                    &mut std::io::stdout(),
-                )
-            }
-        }
-        Ok(())
     }
 }

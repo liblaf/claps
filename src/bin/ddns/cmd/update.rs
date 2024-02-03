@@ -1,39 +1,42 @@
 use std::net::IpAddr;
-use std::str::FromStr;
 
 use anyhow::Result;
 use clap::Args;
 
 use claps::api::cloudflare::Client;
 
-use super::CommonArgs;
+use crate::cmd::GlobalArgs;
 
-#[derive(Debug, Args)]
-pub(super) struct Cmd {}
+#[derive(Args)]
+pub struct Cmd {}
 
 impl Cmd {
-    pub async fn run(self, args: CommonArgs) -> Result<()> {
-        let name = args.name()?;
-        let token = args.token()?;
-        let zone = args.zone()?;
-        let client = Client::new(token);
-        let records = client.list(&zone, &name).await?;
-        let mut local_addrs = crate::ip::addrs()?;
-        for record in records {
-            let remote_addr = IpAddr::from_str(&record.content)?;
-            match local_addrs
-                .iter()
-                .position(|local_addr| *local_addr == remote_addr)
-            {
-                Some(index) => {
-                    local_addrs.remove(index);
-                }
-                None => client.delete(&zone, &record).await?,
+    pub async fn run(self, args: GlobalArgs) -> Result<()> {
+        let mut addrs = claps::cmd::py::ip().await?;
+        let client = Client::new(args.token().await?.as_str(), args.zone.as_str());
+        let records = client.list(args.name()?.as_str()).await?;
+        let mut jobs_delete = vec![];
+        for record in records.as_slice() {
+            let addr = record.content.parse::<IpAddr>()?;
+            let pos = addrs.iter().position(|a| a == &addr);
+            if let Some(pos) = pos {
+                addrs.remove(pos);
+            } else {
+                jobs_delete.push(client.delete(record));
             }
         }
-        for local_addr in local_addrs {
-            client.create(&zone, &name, local_addr).await?;
+        let name = args.name()?;
+        let mut jobs_create = vec![];
+        for addr in addrs.as_slice() {
+            jobs_create.push(client.create(name.as_str(), addr));
         }
+        let (results_delete, results_create) = futures::future::join(
+            futures::future::join_all(jobs_delete),
+            futures::future::join_all(jobs_create),
+        )
+        .await;
+        results_delete.into_iter().collect::<Result<Vec<_>>>()?;
+        results_create.into_iter().collect::<Result<Vec<_>>>()?;
         Ok(())
     }
 }

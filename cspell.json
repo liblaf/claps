@@ -1,14 +1,16 @@
 {
   "words": [
-    "afinet",
+    "bbws",
+    "bddns",
+    "btoken",
+    "bzone",
     "choco",
     "ddns",
-    "folderid",
     "gomod",
-    "indicatif",
+    "izone",
     "liblaf",
-    "netifas",
     "nointeraction",
+    "peaker",
     "swatinem"
   ],
   "ignorePaths": ["*-lock.*", "*.lock", "cspell.json"],
@@ -18,9 +20,9 @@
     "cpp-legacy",
     "cpp-refined",
     "dotnet",
-    "en-gb",
     "makefile",
     "npm",
+    "python-common",
     "rust"
   ],
   "allowCompoundWords": true

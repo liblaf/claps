@@ -1,70 +1,84 @@
-# Command-Line Help for `ddns`
+# NAME
 
-This document contains the help content for the `ddns` command-line program.
+ddns - CLIs written in Rust
 
-**Command Overview:**
+# SYNOPSIS
 
-- [`ddns`↴](#ddns)
-- [`ddns complete`↴](#ddns-complete)
-- [`ddns delete`↴](#ddns-delete)
-- [`ddns install`↴](#ddns-install)
-- [`ddns list`↴](#ddns-list)
-- [`ddns update`↴](#ddns-update)
+**ddns** \[**-n**\|**\--name**\] \[**-t**\|**\--token**\]
+\[**-z**\|**\--zone**\] \[**-v**\|**\--verbose**\]\...
+\[**-q**\|**\--quiet**\]\... \[**-h**\|**\--help**\]
+\[**-V**\|**\--version**\] \<_subcommands_\>
 
-## `ddns`
+# DESCRIPTION
 
-**Usage:** `ddns [OPTIONS] <COMMAND>`
+CLIs written in Rust
 
-###### **Subcommands:**
+# OPTIONS
 
-- `complete` — Generate tab-completion scripts for your shell
-- `delete` —
-- `install` —
-- `list` —
-- `update` —
+**-n**, **\--name**=_NAME_
 
-###### **Options:**
+:
 
-- `-n`, `--name <NAME>`
-- `-t`, `--token <TOKEN>`
-- `-z`, `--zone <ZONE>`
+    May also be specified with the **NAME** environment variable.
 
-  Default value: `919b04037636d3b4bbc0af135eaccdfa`
+**-t**, **\--token**=_TOKEN_
 
-- `-v`, `--verbose` — Increase logging verbosity
-- `-q`, `--quiet` — Decrease logging verbosity
+:
 
-## `ddns complete`
+    May also be specified with the **TOKEN** environment variable.
 
-Generate tab-completion scripts for your shell
+**-z**, **\--zone**=_ZONE_ \[default: 919b04037636d3b4bbc0af135eaccdfa\]
 
-**Usage:** `ddns complete <SHELL>`
+:
 
-###### **Arguments:**
+    May also be specified with the **ZONE** environment variable.
 
-- `<SHELL>`
+**-v**, **\--verbose**
 
-  Possible values: `markdown`, `bash`, `elvish`, `fish`, `powershell`, `zsh`
+: Increase logging verbosity
 
-## `ddns delete`
+**-q**, **\--quiet**
 
-**Usage:** `ddns delete`
+: Decrease logging verbosity
 
-## `ddns install`
+**-h**, **\--help**
 
-**Usage:** `ddns install`
+: Print help
 
-## `ddns list`
+**-V**, **\--version**
 
-**Usage:** `ddns list`
+: Print version
 
-## `ddns update`
+# SUBCOMMANDS
 
-**Usage:** `ddns update`
+ddns-complete(1)
 
-<hr/>
+:
 
-<small><i>
-This document was generated automatically by
-<a href="https://crates.io/crates/clap-markdown"><code>clap-markdown</code></a>.
-</i></small>
+ddns-delete(1)
+
+:
+
+ddns-install(1)
+
+:
+
+ddns-list(1)
+
+:
+
+ddns-update(1)
+
+:
+
+ddns-help(1)
+
+: Print this message or the help of the given subcommand(s)
+
+# VERSION
+
+v0.1.0
+
+# AUTHORS
+
+liblaf \<i@liblaf.me\>

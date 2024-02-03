@@ -4,7 +4,7 @@ vars:
   HOST:
     sh: |
       rustc --version --verbose | sed --quiet "s/host: //p"
-  TARGETS: alist-cli ddns gfw pm
+  TARGETS: bws ddns
 
 tasks:
   default:
@@ -28,10 +28,10 @@ tasks:
   docs:
     cmds:
       - cmd: mkdir --parents --verbose docs
-        silent: true
       - cmd: |
           mkdir --parents --verbose "docs/{{.ITEM}}"
-          cargo run --bin="{{.ITEM}}" complete markdown > "docs/{{.ITEM}}/README.md"
+          cargo run --bin="{{.ITEM}}" complete man > "docs/{{.ITEM}}/{{.ITEM}}.1"
+          pandoc --output="docs/{{.ITEM}}/README.md" "docs/{{.ITEM}}/{{.ITEM}}.1"
         for:
           var: TARGETS
       - prettier --write docs
