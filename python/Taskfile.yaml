@@ -1,6 +1,24 @@
 version: "3"
 
 tasks:
+  build:
+    cmds:
+      - poetry build
+      - cmd: |
+          for file in dist/*; do
+            dst="${file//"-{{.VERSION}}"/}"
+            if [[ "$file" != "$dst" ]]; then
+              mv --verbose "$file" "$dst"
+            fi
+          done
+        silent: true
+    generates:
+      - dist/*.tar.gz
+      - dist/*.whl
+    vars:
+      VERSION:
+        sh: poetry version --short
+
   setup:
     cmds:
       - micromamba --yes --name="claps" create python=3.11
