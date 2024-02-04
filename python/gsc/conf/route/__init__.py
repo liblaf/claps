@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from typing import Optional
 
 import pydantic
@@ -8,7 +7,7 @@ from gsc.conf.route import rule as _rule
 
 
 class Route(pydantic.BaseModel):
-    rules: Optional[Sequence[_rule.Rule]] = pydantic.Field(
+    rules: Optional[list[_rule.Rule]] = pydantic.Field(
         default_factory=lambda: [
             _rule.Rule(protocol=["dns"], outbound="DNS"),
             _rule.Rule(
@@ -23,7 +22,7 @@ class Route(pydantic.BaseModel):
             ),
         ]
     )
-    rule_set: Optional[Sequence[_rule_set.RuleSet]] = pydantic.Field(
+    rule_set: Optional[list[_rule_set.RuleSet]] = pydantic.Field(
         default_factory=lambda: [
             _rule_set.geoip("cn"),
             _rule_set.geosite("bing"),

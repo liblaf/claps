@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from typing import Optional
 
 import pydantic
@@ -13,18 +12,16 @@ from gsc.conf.inbound import mixed as _mixed
 from gsc.conf.outbound import block as _block
 from gsc.conf.outbound import direct as _direct
 from gsc.conf.outbound import dns as _out_dns
-from gsc.conf.outbound import selector as _selector
 
 
 class Conf(pydantic.BaseModel):
     log: Optional[_log.Log] = pydantic.Field(default_factory=_log.Log)
     dns: Optional[_dns.DNS] = pydantic.Field(default_factory=_dns.DNS)
-    inbounds: Optional[Sequence[_inbound.Inbound]] = pydantic.Field(
+    inbounds: Optional[list[_inbound.Inbound]] = pydantic.Field(
         default_factory=lambda: [_mixed.Mixed()]
     )
-    outbounds: Optional[Sequence[_outbound.Outbound]] = pydantic.Field(
+    outbounds: Optional[list[_outbound.Outbound]] = pydantic.Field(
         default_factory=lambda: [
-            _selector.Selector(tag="PROXY"),
             _direct.Direct(),
             _block.Block(),
             _out_dns.DNS(),

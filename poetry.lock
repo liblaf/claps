@@ -12,6 +12,26 @@ files = [
 ]
 
 [[package]]
+name = "anyio"
+version = "4.2.0"
+description = "High level compatibility layer for multiple asynchronous event loop implementations"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "anyio-4.2.0-py3-none-any.whl", hash = "sha256:745843b39e829e108e518c489b31dc757de7d2131d53fac32bd8df268227bfee"},
+    {file = "anyio-4.2.0.tar.gz", hash = "sha256:e1875bb4b4e2de1669f4bc7869b6d3f54231cdced71605e6e64c9be77e3be50f"},
+]
+
+[package.dependencies]
+idna = ">=2.8"
+sniffio = ">=1.1"
+
+[package.extras]
+doc = ["Sphinx (>=7)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme"]
+test = ["anyio[trio]", "coverage[toml] (>=7)", "exceptiongroup (>=1.2.0)", "hypothesis (>=4.0)", "psutil (>=5.9)", "pytest (>=7.0)", "pytest-mock (>=3.6.1)", "trustme", "uvloop (>=0.17)"]
+trio = ["trio (>=0.23)"]
+
+[[package]]
 name = "asttokens"
 version = "2.4.1"
 description = "Annotate AST trees with source code positions"
@@ -28,6 +48,17 @@ six = ">=1.12.0"
 [package.extras]
 astroid = ["astroid (>=1,<2)", "astroid (>=2,<4)"]
 test = ["astroid (>=1,<2)", "astroid (>=2,<4)", "pytest"]
+
+[[package]]
+name = "certifi"
+version = "2024.2.2"
+description = "Python package for providing Mozilla's CA Bundle."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "certifi-2024.2.2-py3-none-any.whl", hash = "sha256:dc383c07b76109f368f6106eee2b593b04a011ea4d55f652c6ca24a754d1cdd1"},
+    {file = "certifi-2024.2.2.tar.gz", hash = "sha256:0569859f95fc761b18b45ef421b1290a0f65f147e92a1e5eb3e635f9a5e4e66f"},
+]
 
 [[package]]
 name = "colorama"
@@ -55,6 +86,63 @@ files = [
 tests = ["asttokens (>=2.1.0)", "coverage", "coverage-enable-subprocess", "ipython", "littleutils", "pytest", "rich"]
 
 [[package]]
+name = "h11"
+version = "0.14.0"
+description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
+    {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
+]
+
+[[package]]
+name = "httpcore"
+version = "1.0.2"
+description = "A minimal low-level HTTP client."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "httpcore-1.0.2-py3-none-any.whl", hash = "sha256:096cc05bca73b8e459a1fc3dcf585148f63e534eae4339559c9b8a8d6399acc7"},
+    {file = "httpcore-1.0.2.tar.gz", hash = "sha256:9fc092e4799b26174648e54b74ed5f683132a464e95643b226e00c2ed2fa6535"},
+]
+
+[package.dependencies]
+certifi = "*"
+h11 = ">=0.13,<0.15"
+
+[package.extras]
+asyncio = ["anyio (>=4.0,<5.0)"]
+http2 = ["h2 (>=3,<5)"]
+socks = ["socksio (==1.*)"]
+trio = ["trio (>=0.22.0,<0.23.0)"]
+
+[[package]]
+name = "httpx"
+version = "0.26.0"
+description = "The next generation HTTP client."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "httpx-0.26.0-py3-none-any.whl", hash = "sha256:8915f5a3627c4d47b73e8202457cb28f1266982d1159bd5779d86a80c0eab1cd"},
+    {file = "httpx-0.26.0.tar.gz", hash = "sha256:451b55c30d5185ea6b23c2c793abf9bb237d2a7dfb901ced6ff69ad37ec1dfaf"},
+]
+
+[package.dependencies]
+anyio = "*"
+certifi = "*"
+httpcore = "==1.*"
+idna = "*"
+sniffio = "*"
+socksio = {version = "==1.*", optional = true, markers = "extra == \"socks\""}
+
+[package.extras]
+brotli = ["brotli", "brotlicffi"]
+cli = ["click (==8.*)", "pygments (==2.*)", "rich (>=10,<14)"]
+http2 = ["h2 (>=3,<5)"]
+socks = ["socksio (==1.*)"]
+
+[[package]]
 name = "icecream"
 version = "2.1.3"
 description = "Never use print() to debug again; inspect variables, expressions, and program execution with a single, simple function call."
@@ -70,6 +158,59 @@ asttokens = ">=2.0.1"
 colorama = ">=0.3.9"
 executing = ">=0.3.1"
 pygments = ">=2.2.0"
+
+[[package]]
+name = "idna"
+version = "3.6"
+description = "Internationalized Domain Names in Applications (IDNA)"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "idna-3.6-py3-none-any.whl", hash = "sha256:c05567e9c24a6b9faaa835c4821bad0590fbb9d5779e7caa6e1cc4978e7eb24f"},
+    {file = "idna-3.6.tar.gz", hash = "sha256:9ecdbbd083b06798ae1e86adcbfe8ab1479cf864e4ee30fe4e46a003d12491ca"},
+]
+
+[[package]]
+name = "loguru"
+version = "0.7.2"
+description = "Python logging made (stupidly) simple"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "loguru-0.7.2-py3-none-any.whl", hash = "sha256:003d71e3d3ed35f0f8984898359d65b79e5b21943f78af86aa5491210429b8eb"},
+    {file = "loguru-0.7.2.tar.gz", hash = "sha256:e671a53522515f34fd406340ee968cb9ecafbc4b36c679da03c18fd8d0bd51ac"},
+]
+
+[package.dependencies]
+colorama = {version = ">=0.3.4", markers = "sys_platform == \"win32\""}
+win32-setctime = {version = ">=1.0.0", markers = "sys_platform == \"win32\""}
+
+[package.extras]
+dev = ["Sphinx (==7.2.5)", "colorama (==0.4.5)", "colorama (==0.4.6)", "exceptiongroup (==1.1.3)", "freezegun (==1.1.0)", "freezegun (==1.2.2)", "mypy (==v0.910)", "mypy (==v0.971)", "mypy (==v1.4.1)", "mypy (==v1.5.1)", "pre-commit (==3.4.0)", "pytest (==6.1.2)", "pytest (==7.4.0)", "pytest-cov (==2.12.1)", "pytest-cov (==4.1.0)", "pytest-mypy-plugins (==1.9.3)", "pytest-mypy-plugins (==3.0.0)", "sphinx-autobuild (==2021.3.14)", "sphinx-rtd-theme (==1.3.0)", "tox (==3.27.1)", "tox (==4.11.0)"]
+
+[[package]]
+name = "opencc"
+version = "1.1.7"
+description = "Conversion between Traditional and Simplified Chinese"
+optional = false
+python-versions = "*"
+files = [
+    {file = "OpenCC-1.1.7-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:ba77d5eb376129adcad090a07b0edbee293f26513f14a135a9cb17af004defd1"},
+    {file = "OpenCC-1.1.7-cp310-cp310-manylinux1_x86_64.whl", hash = "sha256:fc4fb3ec08dcbdb430cbd70d14f9457f2b2ef2d51b08bf079b9cee0c6def3eed"},
+    {file = "OpenCC-1.1.7-cp310-cp310-win_amd64.whl", hash = "sha256:8fa764bbb93ff97f50d1f70ca2542c9108adb763845d690e256664a61c98f914"},
+    {file = "OpenCC-1.1.7-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:8aa4b1203bf78ced40ae4da7206089ccd459f823a1b05f311b653eb08dce7d0d"},
+    {file = "OpenCC-1.1.7-cp311-cp311-manylinux1_x86_64.whl", hash = "sha256:3ed6f128383375b9dc5c3db02ffa9d6ac1a14242656414bab85a18ef65daf645"},
+    {file = "OpenCC-1.1.7-cp311-cp311-win_amd64.whl", hash = "sha256:d2d4705b3f599903784b4d4be6a557c591aeeb93d2b99b8f19d3e13dee4fab10"},
+    {file = "OpenCC-1.1.7-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:253e7d636ad0aad2e70e616d2185181e0104687f53ec38974f7b67221c475382"},
+    {file = "OpenCC-1.1.7-cp312-cp312-manylinux1_x86_64.whl", hash = "sha256:dc5d6443b833e1a45bcad4d4312c680d9d574a365491357165d927a3eecac5f0"},
+    {file = "OpenCC-1.1.7-cp312-cp312-win_amd64.whl", hash = "sha256:7f3f843f0b47afa0bff91ea5b9fbf9968f19ffbaffda9508615993058246ca3c"},
+    {file = "OpenCC-1.1.7-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:49c2eb39f636c948eaa21a84f4553da761a9cca5aa0dede8570729d572712531"},
+    {file = "OpenCC-1.1.7-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:49bbf40042702a743ad5b65398fc3faf1582e41fc948cd9bbbabe7c3e5366cd6"},
+    {file = "OpenCC-1.1.7-cp38-cp38-win_amd64.whl", hash = "sha256:06092f06e4b8a1f2563df03214c9f6fa457c9ff6d114f76bf9fb374cc2a4591f"},
+    {file = "OpenCC-1.1.7-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:a16b7ed7d01b77b133a51e41903c5c83486de5be5483164c869ed34b9bbfdaf7"},
+    {file = "OpenCC-1.1.7-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:b55ad5edf93a45e89519fa4aa80384d7021fd795fdf8c9315b6898fa2a0e202a"},
+    {file = "OpenCC-1.1.7-cp39-cp39-win_amd64.whl", hash = "sha256:6455d2548e2211d28cfa68d25aceeb4ff06c6a396264dcefe5a2b885ffeaf783"},
+]
 
 [[package]]
 name = "pydantic"
@@ -208,6 +349,28 @@ files = [
 ]
 
 [[package]]
+name = "sniffio"
+version = "1.3.0"
+description = "Sniff out which async library your code is running under"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "sniffio-1.3.0-py3-none-any.whl", hash = "sha256:eecefdce1e5bbfb7ad2eeaabf7c1eeb404d7757c379bd1f7e5cce9d8bf425384"},
+    {file = "sniffio-1.3.0.tar.gz", hash = "sha256:e60305c5e5d314f5389259b7f22aaa33d8f7dee49763119234af3755c55b9101"},
+]
+
+[[package]]
+name = "socksio"
+version = "1.0.0"
+description = "Sans-I/O implementation of SOCKS4, SOCKS4A, and SOCKS5."
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "socksio-1.0.0-py3-none-any.whl", hash = "sha256:95dc1f15f9b34e8d7b16f06d74b8ccf48f609af32ab33c608d08761c5dcbb1f3"},
+    {file = "socksio-1.0.0.tar.gz", hash = "sha256:f88beb3da5b5c38b9890469de67d0cb0f9d494b78b106ca1845f96c10b91c4ac"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.9.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -218,7 +381,21 @@ files = [
     {file = "typing_extensions-4.9.0.tar.gz", hash = "sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783"},
 ]
 
+[[package]]
+name = "win32-setctime"
+version = "1.1.0"
+description = "A small Python utility to set file creation time on Windows"
+optional = false
+python-versions = ">=3.5"
+files = [
+    {file = "win32_setctime-1.1.0-py3-none-any.whl", hash = "sha256:231db239e959c2fe7eb1d7dc129f11172354f98361c4fa2d6d2d7e278baa8aad"},
+    {file = "win32_setctime-1.1.0.tar.gz", hash = "sha256:15cf5750465118d6929ae4de4eb46e8edae9a5634350c01ba582df868e932cb2"},
+]
+
+[package.extras]
+dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5cc1b23560b7dddc5ef849e890d5fd98629ce4364727027710c76eb0b87c92ed"
+content-hash = "237389759548813080c10e587a03ff8e96eb72d9e87123a4c0aeec669793eac7"

@@ -39,3 +39,7 @@ tasks:
         for:
           var: TARGETS
       - prettier --write docs
+
+  setup:
+    deps:
+      - python:setup

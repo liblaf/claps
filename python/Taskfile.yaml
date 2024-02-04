@@ -3,6 +3,5 @@ version: "3"
 tasks:
   setup:
     cmds:
-      - pwd
       - micromamba --yes --name="claps" create python=3.11
       - micromamba --name="claps" run poetry install

@@ -12,6 +12,9 @@ class _Outbound(pydantic.BaseModel):
     type: str
     tag: str
 
+    def __hash__(self) -> int:
+        return hash(self.tag)
+
 
 Outbound = (
     _direct.Direct

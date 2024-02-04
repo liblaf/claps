@@ -1,5 +1,6 @@
 {
   "words": [
+    "anyio",
     "apiv",
     "bbws",
     "bddns",
@@ -11,7 +12,9 @@
     "dmypy",
     "folderid",
     "gomod",
+    "httpx",
     "indicatif",
+    "ipvx",
     "ipynb",
     "izone",
     "liblaf",
@@ -19,6 +22,7 @@
     "mkdocs",
     "nointeraction",
     "nthu",
+    "opencc",
     "peaker",
     "pybuilder",
     "pycache",
@@ -27,6 +31,7 @@
     "pypa",
     "pypackages",
     "pytype",
+    "sniffio",
     "swatinem"
   ],
   "ignorePaths": ["*-lock.*", "*.lock", "cspell.json"],
@@ -36,6 +41,7 @@
     "cpp-legacy",
     "cpp-refined",
     "dotnet",
+    "golang",
     "makefile",
     "npm",
     "php",

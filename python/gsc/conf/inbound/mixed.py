@@ -1,11 +1,10 @@
-from collections.abc import Sequence
 from typing import Literal, Optional
 
 import pydantic
 
 
 class Mixed(pydantic.BaseModel):
-    type: Literal["Mixed"] = "Mixed"
+    type: Literal["mixed"] = "mixed"
     tag: str = "in-mixed"
 
     # Listen Fields
@@ -16,4 +15,4 @@ class Mixed(pydantic.BaseModel):
         username: str
         password: str
 
-    users: Optional[Sequence[User]] = None
+    users: Optional[list[User]] = None

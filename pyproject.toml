@@ -9,6 +9,9 @@ packages = [{ include = "gsc", from = "python" }]
 [tool.poetry.dependencies]
 python = "^3.11"
 pydantic = "^2.6.0"
+httpx = {extras = ["socks"], version = "^0.26.0"}
+opencc = "^1.1.7"
+loguru = "^0.7.2"
 [tool.poetry.scripts]
 gsc = "gsc.__main__:main"
 

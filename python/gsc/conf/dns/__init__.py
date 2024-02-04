@@ -1,4 +1,3 @@
-from collections.abc import Sequence
 from typing import Optional
 
 import pydantic
@@ -8,7 +7,7 @@ from gsc.conf.dns import server as _server
 
 
 class DNS(pydantic.BaseModel):
-    servers: Optional[Sequence[_server.Server]] = pydantic.Field(
+    servers: Optional[list[_server.Server]] = pydantic.Field(
         default_factory=lambda: [
             _server.Server(
                 tag="dns-!cn",
@@ -26,7 +25,7 @@ class DNS(pydantic.BaseModel):
             _server.Server(tag="dns-block", address="rcode://success"),
         ]
     )
-    rules: Optional[Sequence[_rule.Rule]] = pydantic.Field(
+    rules: Optional[list[_rule.Rule]] = pydantic.Field(
         default_factory=lambda: [
             _rule.Rule(outbound=["any"], server="dns-cn"),
             _rule.Rule(
