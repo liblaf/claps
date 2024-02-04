@@ -4,6 +4,8 @@ use std::process::Stdio;
 use anyhow::Result;
 use tokio::process::Command;
 
+use crate::common::log::LogResult;
+
 pub mod get;
 pub mod list;
 pub mod types;
@@ -20,7 +22,8 @@ where
         .stdout(Stdio::piped())
         .stderr(Stdio::inherit());
     tracing::debug!("{:?}", cmd);
-    let output = cmd.output().await?;
+    let child = cmd.spawn().log()?;
+    let output = child.wait_with_output().await.log()?;
     crate::ensure!(output.status.success());
     Ok(output.stdout)
 }

@@ -14,6 +14,7 @@ where
 {
     fn init(&self) {
         if let Some(level) = self.log_level() {
+            std::env::set_var("LOG_LEVEL", level.to_string());
             let builder = tracing_subscriber::fmt().with_writer(std::io::stderr);
             let builder = match level {
                 clap_verbosity_flag::Level::Error => builder.with_max_level(tracing::Level::ERROR),

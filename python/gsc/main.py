@@ -2,6 +2,8 @@ import asyncio
 import itertools
 import math
 
+from loguru import logger
+
 from gsc import conf as _conf
 from gsc import fetch as _fetch
 from gsc import group as _group
@@ -21,6 +23,11 @@ async def main(
     ipv: bool = False,
     timeout: float = math.nan,
 ) -> None:
+    for url in urls:
+        logger.debug("{}", url)
+    logger.debug(
+        "country: {}, geo: {}, ipv: {}, timeout: {}", country, geo, ipv, timeout
+    )
     conf = _conf.Conf()
     assert conf.outbounds
     outbounds: list[_outbound.Outbound] = await _fetch.fetch(urls)
