@@ -15,5 +15,5 @@ Level = (
 
 class Log(pydantic.BaseModel):
     disabled: Optional[bool] = False
-    level: Optional[Level] = "info"
+    level: Optional[Level] = "warn"
     timestamp: Optional[bool] = False

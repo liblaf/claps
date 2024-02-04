@@ -13,6 +13,8 @@ mod sub;
 pub struct Cmd {
     #[command(subcommand)]
     sub_cmd: SubCmd,
+    #[arg(long)]
+    no_proxy: bool,
     #[command(flatten)]
     verbose: Verbosity<InfoLevel>,
 }
@@ -27,6 +29,13 @@ enum SubCmd {
 impl Cmd {
     pub async fn run(self) -> Result<()> {
         self.verbose.init();
+        if self.no_proxy {
+            for (key, _) in std::env::vars() {
+                if key.to_lowercase().contains("proxy") {
+                    std::env::remove_var(key);
+                }
+            }
+        }
         match self.sub_cmd {
             SubCmd::Complete(cmd) => cmd.run(Cmd::command()),
             SubCmd::IP(cmd) => cmd.run().await,

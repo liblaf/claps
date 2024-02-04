@@ -1,7 +1,8 @@
+import asyncio
 import functools
 
+from dns import asyncquery as _query
 from dns import message as _message
-from dns import query as _query
 from loguru import logger
 
 SERVERS: list[str] = [
@@ -13,20 +14,25 @@ SERVERS: list[str] = [
 
 
 @functools.cache
-def dns() -> str:
-    for server in SERVERS:
+async def dns() -> str:
+    for task in asyncio.as_completed([query(server) for server in SERVERS], timeout=5):
         try:
-            query(server=server)
-            logger.success("DNS: {}", server)
-            return server
+            result: str = await task
+            logger.success("DNS: {}", result)
+            return result
         except Exception as e:
-            logger.error("DNS: {} {}", server, e)
+            logger.error("DNS: {}", e)
     return "local"
 
 
 @functools.cache
-def query(server: str, query: str = "chat.liblaf.me") -> _message.Message:
+@logger.catch
+async def query(server: str, query: str = "chat.liblaf.me") -> str:
     q: _message.QueryMessage = _message.make_query(qname=query, rdtype="A")
     if server.startswith("https://"):
-        return _query.https(q=q, where=server, timeout=5)  # type: ignore
+        await _query.https(q=q, where=server, timeout=5)  # type: ignore
+        return server
     raise NotImplementedError()
+
+
+BEST: str = asyncio.run(dns())

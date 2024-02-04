@@ -18,7 +18,7 @@ class DNS(pydantic.BaseModel):
             ),
             _server.Server(
                 tag="dns-cn",
-                address=_auto.dns(),
+                address=_auto.BEST,
                 address_resolver="dns-local",
                 detour="DIRECT",
             ),
