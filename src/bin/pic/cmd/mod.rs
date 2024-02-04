@@ -53,14 +53,14 @@ impl GlobalArgs {
         if let Some(username) = self.username.as_deref() {
             return Ok(username.to_string());
         }
-        claps::cmd::bw::get::username(self.url.as_str()).await
+        claps::external::bw::get::username(self.url.as_str()).await
     }
 
     async fn password(&self) -> Result<String> {
         if let Some(password) = self.password.as_deref() {
             return Ok(password.to_string());
         }
-        claps::cmd::bw::get::password(self.url.as_str()).await
+        claps::external::bw::get::password(self.url.as_str()).await
     }
 
     async fn client(&self) -> Result<Client> {

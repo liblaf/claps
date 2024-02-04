@@ -71,6 +71,6 @@ impl GlobalArgs {
         if let Some(token) = self.token.as_deref() {
             return Ok(token.to_string());
         }
-        claps::cmd::bw::get::notes("CLOUDFLARE_TOKEN").await
+        claps::external::bw::get::notes("CLOUDFLARE_TOKEN").await
     }
 }

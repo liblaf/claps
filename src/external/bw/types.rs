@@ -2,6 +2,12 @@ use serde::Deserialize;
 use serde_json::Value;
 
 #[derive(Deserialize)]
+pub struct Folder {
+    pub id: String,
+    pub name: String,
+}
+
+#[derive(Deserialize)]
 #[serde(untagged)]
 pub enum Item {
     Login(ItemLogin),
@@ -12,11 +18,11 @@ pub enum Item {
 pub struct ItemLogin {
     pub name: String,
     pub notes: Option<String>,
-    pub login: LoginLogin,
+    pub login: ItemLoginLogin,
 }
 
 #[derive(Deserialize)]
-pub struct LoginLogin {
+pub struct ItemLoginLogin {
     pub username: Option<String>,
     pub password: Option<String>,
 }

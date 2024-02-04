@@ -5,9 +5,9 @@ use tabled::settings::object::Columns;
 use tabled::settings::peaker::PriorityMax;
 use tabled::settings::{Color, Style, Width};
 
-use claps::cmd::bw::types::Item;
 use claps::common::cmd::STYLES;
 use claps::common::log::{LogInit, LogResult};
+use claps::external::bw::types::Item;
 
 #[derive(Parser)]
 #[command(name = env!("CARGO_BIN_NAME"), version, author, about, styles = STYLES)]
@@ -33,7 +33,7 @@ impl Cmd {
             None => {
                 let mut builder = Builder::new();
                 builder.push_record(["Name", "Username", "Password", "Notes"]);
-                let items = claps::cmd::bw::list::items(self.search.as_deref()).await?;
+                let items = claps::external::bw::list::items(self.search.as_deref(), None).await?;
                 for item in items {
                     match item {
                         Item::Login(item) => {

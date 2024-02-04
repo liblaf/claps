@@ -22,7 +22,7 @@ impl Cmd {
         let contents = include_str!(concat!(env!("CARGO_MANIFEST_DIR"), "/docs/ddns/ddns.timer"));
         tokio::fs::write(&path, contents).await.log()?;
         tracing::info!("installed: {:?}", path);
-        claps::cmd::run(["systemctl", "--user", "enable", "--now", "ddns.timer"]).await?;
+        claps::external::run(["systemctl", "--user", "enable", "--now", "ddns.timer"]).await?;
         tracing::info!("systemctl --user enable --now ddns.timer");
         Ok(())
     }
