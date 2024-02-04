@@ -27,6 +27,7 @@
     "dotnet",
     "makefile",
     "npm",
+    "php",
     "python-common",
     "rust"
   ],
