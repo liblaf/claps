@@ -16,7 +16,11 @@ impl Cmd {
     pub async fn run(self) -> Result<()> {
         if let Some(addr) = self.addr {
             let geoip = claps::api::ipsb::geoip(Some(addr), None).await?;
-            todo!()
+            let mut table = geoip.table();
+            table.with(Style::empty());
+            table.modify(Columns::single(0), Color::FG_BLUE);
+            table.modify(Columns::single(1), Color::FG_YELLOW);
+            println!("{}", table);
         } else {
             let geoipv4 = claps::api::ipsb::geoip(None, Some(IPVersion::V4));
             let geoipv6 = claps::api::ipsb::geoip(None, Some(IPVersion::V6));
@@ -32,10 +36,12 @@ impl Cmd {
             };
             table.modify(Columns::single(0), Color::FG_BLUE);
             table.modify(Columns::single(1), Color::FG_YELLOW);
-            if table.count_columns() > 2 {
+            if table.count_columns() <= 2 {
+                table.with(Style::empty());
+            } else {
+                table.with(Style::empty().verticals([(2, VerticalLine::new('|'))]));
                 table.modify(Columns::single(2), Color::FG_BLUE);
                 table.modify(Columns::single(3), Color::FG_YELLOW);
-                table.with(Style::empty().verticals([(2, VerticalLine::new('|'))]));
             }
             println!("{}", table);
         }

@@ -1,4 +1,3 @@
-use std::fmt::{Display, Formatter};
 use std::net::IpAddr;
 
 use anyhow::Result;
@@ -6,8 +5,6 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tabled::builder::Builder;
-use tabled::settings::object::Columns;
-use tabled::settings::{Color, Style};
 use tabled::Table;
 
 use crate::common::log::{LogJson, LogResult};
@@ -50,17 +47,17 @@ pub async fn geoip(addr: Option<IpAddr>, v: Option<IPVersion>) -> Result<GeoIP> 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct GeoIP {
     ip: String,
-    country_code: String,
-    country: String,
+    country_code: Option<String>,
+    country: Option<String>,
     region_code: Option<String>,
     region: Option<String>,
     city: Option<String>,
     postal_code: Option<String>,
-    continent_code: String,
-    latitude: f64,
-    longitude: f64,
+    continent_code: Option<String>,
+    latitude: Option<f64>,
+    longitude: Option<f64>,
     organization: String,
-    timezone: String,
+    timezone: Option<String>,
     #[serde(flatten)]
     extra: Option<Value>,
 }
@@ -69,17 +66,25 @@ impl GeoIP {
     pub fn table(&self) -> Table {
         let mut table = Builder::new();
         table.push_record(["IP", self.ip.as_str()]);
-        table.push_record(["Country", self.country.as_str()]);
+        if let Some(country) = self.country.as_deref() {
+            table.push_record(["Country", country]);
+        }
         if let Some(resion) = self.region.as_deref() {
             table.push_record(["Region", resion]);
         }
         if let Some(city) = self.city.as_deref() {
             table.push_record(["City", city]);
         }
-        table.push_record(["Latitude", self.latitude.to_string().as_str()]);
-        table.push_record(["Longitude", self.longitude.to_string().as_str()]);
+        if let (Some(latitude), Some(longitude)) = (self.latitude, self.longitude) {
+            table.push_record([
+                "Coordinate",
+                format!("{} N, {} E", latitude, longitude).as_str(),
+            ]);
+        }
         table.push_record(["Organization", self.organization.as_str()]);
-        table.push_record(["Timezone", self.timezone.as_str()]);
+        if let Some(timezone) = self.timezone.as_deref() {
+            table.push_record(["Timezone", timezone]);
+        }
         table.build()
     }
 }
