@@ -50,6 +50,7 @@ impl Cmd {
         tracing::debug!("{:?}", cmd);
         let child = cmd.spawn().log()?;
         let output = child.wait_with_output().await.log()?;
+        claps::ensure!(output.status.success());
         let conf = output.stdout;
         tokio::io::stdout().write_all(conf.as_slice()).await.log()?;
         Ok(())

@@ -5,6 +5,7 @@ use clap_verbosity_flag::{InfoLevel, Verbosity};
 use claps::common::cmd::STYLES;
 use claps::common::log::LogInit;
 
+mod ip;
 mod sub;
 
 #[derive(Parser)]
@@ -19,6 +20,7 @@ pub struct Cmd {
 #[derive(Subcommand)]
 enum SubCmd {
     Complete(claps::common::cmd::complete::Cmd),
+    IP(ip::Cmd),
     Sub(sub::Cmd),
 }
 
@@ -27,6 +29,7 @@ impl Cmd {
         self.verbose.init();
         match self.sub_cmd {
             SubCmd::Complete(cmd) => cmd.run(Cmd::command()),
+            SubCmd::IP(cmd) => cmd.run().await,
             SubCmd::Sub(cmd) => cmd.run().await,
         }
     }
