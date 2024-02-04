@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "claps"
+version = "0.0.0"
+description = "CLIs written in Rust"
+authors = ["liblaf <i@liblaf.me>"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "gsc", from = "python" }]
+[tool.poetry.dependencies]
+python = "^3.11"
+pydantic = "^2.6.0"
+[tool.poetry.scripts]
+gsc = "gsc.__main__:main"
+
+[tool.poetry.group.dev.dependencies]
+icecream = "^2.1.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "SIM", "UP"]

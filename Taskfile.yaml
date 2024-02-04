@@ -1,5 +1,9 @@
 version: "3"
 
+includes:
+  python:
+    taskfile: python/Taskfile.yaml
+
 vars:
   HOST:
     sh: |
@@ -27,7 +31,7 @@ tasks:
 
   docs:
     cmds:
-      - cmd: mkdir --parents --verbose docs
+      - mkdir --parents --verbose docs
       - cmd: |
           mkdir --parents --verbose "docs/{{.ITEM}}"
           cargo run --bin="{{.ITEM}}" complete man > "docs/{{.ITEM}}/{{.ITEM}}.1"
