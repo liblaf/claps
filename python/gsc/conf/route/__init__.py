@@ -11,12 +11,18 @@ class Route(pydantic.BaseModel):
         default_factory=lambda: [
             _rule.Rule(protocol=["dns"], outbound="DNS"),
             _rule.Rule(
-                ip_is_private=True, rule_set=["geosite:private"], outbound="DIRECT"
+                domain_suffix=["gfw.liblaf.me"],
+                ip_is_private=True,
+                rule_set=["geosite:private"],
+                outbound="DIRECT",
             ),
             _rule.Rule(rule_set=["geosite:category-ads-all"], outbound="BLOCK"),
-            _rule.Rule(rule_set=["geoip:cn", "geosite:cn"], outbound="DIRECT"),
             _rule.Rule(clash_mode="direct", outbound="DIRECT"),
             _rule.Rule(clash_mode="global", outbound="PROXY"),
+            _rule.Rule(
+                rule_set=["geoip:cn", "geosite:cn"],
+                outbound="DIRECT",
+            ),
             _rule.Rule(
                 rule_set=["geosite:bing", "geosite:openai"], outbound="💬 OpenAI"
             ),
@@ -26,6 +32,7 @@ class Route(pydantic.BaseModel):
         default_factory=lambda: [
             _rule_set.geoip("cn"),
             _rule_set.geosite("bing"),
+            _rule_set.geosite("category-ads-all"),
             _rule_set.geosite("cn"),
             _rule_set.geosite("openai"),
             _rule_set.geosite("private"),

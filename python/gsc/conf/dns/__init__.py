@@ -2,6 +2,7 @@ from typing import Optional
 
 import pydantic
 
+from gsc.auto import dns as _auto
 from gsc.conf.dns import rule as _rule
 from gsc.conf.dns import server as _server
 
@@ -17,7 +18,7 @@ class DNS(pydantic.BaseModel):
             ),
             _server.Server(
                 tag="dns-cn",
-                address="https://dns.tuna.tsinghua.edu.cn:8443/dns-query",
+                address=_auto.dns(),
                 address_resolver="dns-local",
                 detour="DIRECT",
             ),
@@ -34,6 +35,8 @@ class DNS(pydantic.BaseModel):
                 disable_cache=True,
             ),
             _rule.Rule(rule_set=["geosite:private"], server="dns-local"),
+            _rule.Rule(clash_mode="direct", server="dns-cn"),
+            _rule.Rule(clash_mode="global", server="dns-!cn"),
             _rule.Rule(rule_set=["geosite:cn"], server="dns-cn"),
         ]
     )
