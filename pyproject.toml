@@ -15,7 +15,7 @@ version = "0.0.0"
 httpx = { extras = ["socks"], version = "^0.26.0" }
 loguru = "^0.7.2"
 opencc = "^1.1.7"
-pydantic = "^2.6.0"
+pydantic = "^2.6.1"
 python = "^3.11"
 dnspython = "^2.5.0"
 
