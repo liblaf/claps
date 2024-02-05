@@ -9,6 +9,7 @@ use crate::{
     common::log::{LogError, LogResult},
 };
 
+#[derive(Clone, PartialEq)]
 pub enum Service {
     AList,
     BT,
@@ -56,6 +57,13 @@ impl Service {
             Self::GPT => "http://127.0.0.1:12303".to_string(),
             Self::Jellyfin => "http://127.0.0.1:8096".to_string(),
             Self::PDF => "http://127.0.0.1:58080".to_string(),
+        }
+    }
+
+    pub fn ingress_main(&self) -> Ingress {
+        Ingress {
+            hostname: Some(format!("{}.liblaf.me", self)),
+            service: self.service(),
         }
     }
 

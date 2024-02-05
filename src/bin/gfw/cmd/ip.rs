@@ -24,7 +24,7 @@ impl Cmd {
         } else {
             let geoipv4 = claps::api::ipsb::geoip(None, Some(IPVersion::V4));
             let geoipv6 = claps::api::ipsb::geoip(None, Some(IPVersion::V6));
-            let (geoipv4, geoipv6) = tokio::join!(geoipv4, geoipv6);
+            let (geoipv4, geoipv6) = futures::future::join(geoipv4, geoipv6).await;
             let mut table = if let Ok(geoip) = geoipv4.as_ref() {
                 let mut table = geoip.table();
                 if let Ok(geoip) = geoipv6.as_ref() {
