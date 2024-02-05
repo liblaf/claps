@@ -23,6 +23,7 @@ tracing = "0.1.40"
 tracing-subscriber = "0.3.18"
 whoami = "1.4.1"
 
+
 [package]
 authors = ["liblaf <i@liblaf.me>"]
 description = "CLIs written in Rust"

@@ -2,7 +2,7 @@ use std::net::IpAddr;
 
 use anyhow::Result;
 use clap::Args;
-use tabled::settings::{object::Columns, style::VerticalLine, Color, Concat, Style};
+use tabled::settings::{object::Columns, style::VerticalLine, Alignment, Color, Concat, Style};
 
 use claps::api::ipsb::IPVersion;
 
@@ -34,14 +34,18 @@ impl Cmd {
             } else {
                 geoipv6?.table()
             };
-            table.modify(Columns::single(0), Color::FG_BLUE);
-            table.modify(Columns::single(1), Color::FG_YELLOW);
+            table
+                .modify(Columns::single(0), Alignment::right())
+                .modify(Columns::single(0), Color::FG_BLUE)
+                .modify(Columns::single(1), Color::FG_YELLOW);
             if table.count_columns() <= 2 {
                 table.with(Style::empty());
             } else {
-                table.with(Style::empty().verticals([(2, VerticalLine::new('|'))]));
-                table.modify(Columns::single(2), Color::FG_BLUE);
-                table.modify(Columns::single(3), Color::FG_YELLOW);
+                table
+                    .with(Style::empty().verticals([(2, VerticalLine::new('|'))]))
+                    .modify(Columns::single(2), Alignment::right())
+                    .modify(Columns::single(2), Color::FG_BLUE)
+                    .modify(Columns::single(3), Color::FG_YELLOW);
             }
             println!("{}", table);
         }

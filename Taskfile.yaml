@@ -8,12 +8,13 @@ vars:
   HOST:
     sh: |
       rustc --version --verbose | sed --quiet "s/host: //p"
-  TARGETS: bws ddns gfw pic
+  TARGETS: bws cf gfw pic
 
 tasks:
   default:
     - cargo check
-    - cargo clippy
+    - cargo clippy --fix --allow-dirty --allow-staged
+    - cargo fmt
 
   clean:
     cmds:
