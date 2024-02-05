@@ -47,7 +47,7 @@ impl CloudflareArgs {
         if let Some(token) = self.token.as_deref() {
             return Ok(token.to_string());
         }
-        claps::external::bw::get::notes("CLOUDFLARE_TOKEN").await
+        claps::external::bw::get::notes("cloudflare.com").await
     }
 
     async fn cloudflare(&self) -> Result<Cloudflare> {
