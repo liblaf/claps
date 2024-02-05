@@ -1,9 +1,6 @@
 use anyhow::Result;
 
-use crate::{
-    api::cloudflare::ResponseArray,
-    common::log::{LogJson, LogResult},
-};
+use crate::common::log::LogResult;
 
 use super::{CfdTunnel, ClientCfdTunnel};
 
@@ -23,8 +20,7 @@ impl ClientCfdTunnel {
         };
         tracing::debug!("{:?}", request);
         let response = request.send().await.log()?;
-        let response = response.error_for_status().log()?;
-        let response = response.json_log::<ResponseArray<CfdTunnel>>().await?.log();
-        Ok(response.result)
+        let result = crate::api::cloudflare::handle::<Vec<CfdTunnel>>(response).await?;
+        Ok(result)
     }
 }

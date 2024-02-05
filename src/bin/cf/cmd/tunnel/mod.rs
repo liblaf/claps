@@ -5,6 +5,7 @@ use claps::api::cloudflare::accounts::Accounts;
 use super::CloudflareArgs;
 
 mod get;
+mod put;
 
 #[derive(Args)]
 pub struct Cmd {
@@ -18,6 +19,7 @@ impl Cmd {
     pub async fn run(self) -> Result<()> {
         match self.cmd {
             SubCmd::Get(cmd) => cmd.run().await,
+            SubCmd::Put(cmd) => cmd.run().await,
         }
     }
 }
@@ -25,6 +27,7 @@ impl Cmd {
 #[derive(Subcommand)]
 enum SubCmd {
     Get(get::Cmd),
+    Put(put::Cmd),
 }
 
 #[derive(Args)]

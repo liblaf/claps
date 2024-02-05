@@ -1,7 +1,9 @@
+use anyhow::Result;
 use reqwest::{header::HeaderMap, ClientBuilder};
-use serde::{Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
+use serde_json::Value;
 
-use crate::common::log::LogResult;
+use crate::common::log::{LogError, LogJson, LogResult};
 
 pub mod accounts;
 pub mod zones;
@@ -35,21 +37,33 @@ impl Cloudflare {
     }
 }
 
+async fn handle<T>(response: reqwest::Response) -> Result<T>
+where
+    T: DeserializeOwned,
+{
+    match response.error_for_status_ref() {
+        Ok(_) => {
+            let response = response.json_log::<Response<T>>().await?;
+            crate::ensure!(response.success);
+            Ok(response.result)
+        }
+        Err(err) => {
+            let err = err.log();
+            let response = response.json_log::<Response<Value>>().await?;
+            response.log();
+            Err(err)
+        }
+    }
+}
+
+#[serde_with::skip_serializing_none]
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ResponseObject<T> {
+pub struct Response<T> {
     errors: Vec<Message>,
     messages: Vec<Message>,
     result: T,
     success: bool,
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct ResponseArray<T> {
-    errors: Vec<Message>,
-    messages: Vec<Message>,
-    result: Vec<T>,
-    success: bool,
-    result_info: ResultInfo,
+    result_info: Option<ResultInfo>,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -66,19 +80,7 @@ pub struct ResultInfo {
     total_count: i64,
 }
 
-impl<T> ResponseObject<T> {
-    fn log(self) -> Self {
-        for error in self.errors.as_slice() {
-            tracing::error!(code = error.code, message = error.message)
-        }
-        for message in self.messages.as_slice() {
-            tracing::info!(code = message.code, message = message.message)
-        }
-        self
-    }
-}
-
-impl<T> ResponseArray<T> {
+impl<T> Response<T> {
     fn log(self) -> Self {
         for error in self.errors.as_slice() {
             tracing::error!(code = error.code, message = error.message)

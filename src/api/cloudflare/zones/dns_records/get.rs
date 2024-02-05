@@ -1,11 +1,8 @@
 use anyhow::Result;
 
 use crate::{
-    api::cloudflare::{
-        zones::dns_records::{DNSRecord, DNSRecords},
-        ResponseArray,
-    },
-    common::log::{LogJson, LogResult},
+    api::cloudflare::zones::dns_records::{DNSRecord, DNSRecords},
+    common::log::LogResult,
 };
 
 impl DNSRecords {
@@ -20,9 +17,7 @@ impl DNSRecords {
             request
         };
         let response = request.send().await.log()?;
-        let response = response.error_for_status().log()?;
-        let response = response.json_log::<ResponseArray<DNSRecord>>().await?.log();
-        crate::ensure!(response.success);
-        Ok(response.result)
+        let result = crate::api::cloudflare::handle::<Vec<DNSRecord>>(response).await?;
+        Ok(result)
     }
 }
