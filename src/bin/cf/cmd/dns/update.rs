@@ -23,6 +23,7 @@ impl Cmd {
             let addr = record.content.parse::<IpAddr>()?;
             let pos = addrs.iter().position(|a| a == &addr);
             if let Some(pos) = pos {
+                tracing::info!("DNS Record Exists: {}", record);
                 addrs.remove(pos);
             } else {
                 jobs_delete.push(dns_records.delete(record.id.as_str(), Some(record)));
@@ -44,13 +45,11 @@ impl Cmd {
                 ),
             );
         }
-        let (results_delete, results_create) = futures::future::join(
-            futures::future::join_all(jobs_delete),
-            futures::future::join_all(jobs_create),
+        futures::future::try_join(
+            futures::future::try_join_all(jobs_delete),
+            futures::future::try_join_all(jobs_create),
         )
-        .await;
-        results_delete.into_iter().collect::<Result<Vec<_>>>()?;
-        results_create.into_iter().collect::<Result<Vec<_>>>()?;
+        .await?;
         Ok(())
     }
 }

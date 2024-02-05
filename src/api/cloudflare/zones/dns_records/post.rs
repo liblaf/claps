@@ -1,10 +1,7 @@
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    api::cloudflare::ResponseObject,
-    common::log::{LogJson, LogResult},
-};
+use crate::common::log::LogResult;
 
 use super::{DNSRecord, DNSRecords};
 
@@ -29,12 +26,8 @@ impl DNSRecords {
             })
             .bearer_auth(self.token.as_str());
         let response = request.send().await.log()?;
-        let response = response.error_for_status().log()?;
-        let response = response
-            .json_log::<ResponseObject<DNSRecord>>()
-            .await?
-            .log();
-        tracing::info!("Create DNS Record: {}", response.result);
+        let result = crate::api::cloudflare::handle::<DNSRecord>(response).await?;
+        tracing::info!("Create DNS Record: {}", result);
         Ok(())
     }
 }

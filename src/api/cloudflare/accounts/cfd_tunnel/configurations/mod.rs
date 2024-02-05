@@ -1,9 +1,19 @@
+use std::fmt::{Display, Formatter};
+
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
+use tabled::{
+    builder::Builder,
+    settings::{
+        object::{Cell, Columns},
+        Alignment, Color, Style,
+    },
+};
 
 use super::ClientCfdTunnel;
 
 mod get;
+mod put;
 
 pub struct ClientConfigurations {
     client: Client,
@@ -35,4 +45,27 @@ pub struct Config {
 pub struct Ingress {
     pub hostname: Option<String>,
     pub service: String,
+}
+
+impl Display for Config {
+    fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
+        let mut table = Builder::new();
+        table.push_record(["Hostname", "", "Service"]);
+        for ingress in self.ingress.as_slice() {
+            table.push_record([
+                ingress.hostname.as_deref().unwrap_or_default(),
+                "->",
+                ingress.service.as_str(),
+            ]);
+        }
+        let mut table = table.build();
+        table
+            .with(Style::empty())
+            .modify(Columns::first(), Alignment::right())
+            .modify(Columns::first(), Color::FG_BLUE)
+            .modify(Columns::last(), Color::FG_YELLOW)
+            .modify(Cell::new(0, 0), Color::BOLD | Color::FG_BLUE)
+            .modify(Cell::new(0, 2), Color::BOLD | Color::FG_YELLOW);
+        write!(f, "{}", table)
+    }
 }

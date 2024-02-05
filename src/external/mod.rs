@@ -5,6 +5,7 @@ use tokio::process::Command;
 
 pub mod bw;
 pub mod py;
+pub mod service;
 
 pub async fn run<I, S>(args: I) -> Result<()>
 where

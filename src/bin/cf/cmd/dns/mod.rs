@@ -36,7 +36,7 @@ enum SubCmd {
     Update(update::Cmd),
 }
 
-#[derive(Args)]
+#[derive(Clone, Args)]
 struct ZonesArgs {
     #[arg(from_global)]
     api: String,
@@ -53,16 +53,16 @@ struct ZonesArgs {
     name: Option<String>,
 }
 
-#[derive(Args)]
-struct ZonesArgsFromGlobal {
+#[derive(Clone, Args)]
+pub struct ZonesArgsFromGlobal {
     #[arg(from_global)]
-    api: String,
+    pub api: String,
     #[arg(from_global)]
-    token: Option<String>,
+    pub token: Option<String>,
     #[arg(from_global)]
-    zone: String,
+    pub zone: String,
     #[arg(from_global)]
-    name: Option<String>,
+    pub name: Option<String>,
 }
 
 impl ZonesArgsFromGlobal {
@@ -80,7 +80,7 @@ impl ZonesArgsFromGlobal {
         Ok(format!("{}.ddns.liblaf.me", whoami::hostname()))
     }
 
-    async fn zones(&self) -> Result<Zones> {
+    pub async fn zones(&self) -> Result<Zones> {
         let cloudflare = self.args().cloudflare().await?;
         Ok(cloudflare.zones(self.zone.as_str()))
     }
