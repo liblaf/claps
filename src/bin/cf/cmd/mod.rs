@@ -1,8 +1,7 @@
 use anyhow::Result;
-use clap::{Args, CommandFactory, Parser, Subcommand};
+use clap::{CommandFactory, Parser, Subcommand};
 use clap_verbosity_flag::{InfoLevel, Verbosity};
 
-use claps::api::cloudflare::Cloudflare;
 use claps::common::log::LogInit;
 
 mod dns;
@@ -13,8 +12,26 @@ mod tunnel;
 pub struct Cmd {
     #[command(subcommand)]
     sub_cmd: SubCmd,
-    #[command(flatten)]
-    args: CloudflareArgs,
+    #[arg(long, default_value = claps::api::cloudflare::API, global(true))]
+    api: String,
+    #[arg(short, long, global(true))]
+    token: Option<String>,
+    #[arg(
+        short,
+        long,
+        default_value = "7ad40aa54c5d9453abe45eeb3c6643de",
+        global(true)
+    )]
+    account: String,
+    #[arg(
+        short,
+        long,
+        default_value = "919b04037636d3b4bbc0af135eaccdfa",
+        global(true)
+    )]
+    zone: String,
+    #[arg(short, long, global(true))]
+    name: Option<String>,
     #[command(flatten)]
     verbose: Verbosity<InfoLevel>,
 }
@@ -26,14 +43,6 @@ enum SubCmd {
     Tunnel(tunnel::Cmd),
 }
 
-#[derive(Args)]
-struct CloudflareArgs {
-    #[arg(short, long, default_value = claps::api::cloudflare::API, global = true)]
-    api: String,
-    #[arg(short, long, global = true)]
-    token: Option<String>,
-}
-
 impl Cmd {
     pub async fn run(self) -> Result<()> {
         self.verbose.init();
@@ -42,19 +51,5 @@ impl Cmd {
             SubCmd::Dns(cmd) => cmd.run().await,
             SubCmd::Tunnel(cmd) => cmd.run().await,
         }
-    }
-}
-
-impl CloudflareArgs {
-    async fn token(&self) -> Result<String> {
-        if let Some(token) = self.token.as_deref() {
-            return Ok(token.to_string());
-        }
-        claps::external::bw::get::notes("cloudflare.com").await
-    }
-
-    async fn cloudflare(&self) -> Result<Cloudflare> {
-        let token = self.token().await?;
-        Ok(Cloudflare::new(Some(self.api.as_str()), token.as_str()))
     }
 }

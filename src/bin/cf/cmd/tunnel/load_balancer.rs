@@ -5,19 +5,33 @@ use claps::{
     external::service::Service,
 };
 
-use super::TunnelZoneArgs;
-
 #[derive(Args)]
 pub struct Cmd {
     #[arg(default_values = ["alist", "bt", "glances", "gpt", "jellyfin", "pdf"], ignore_case(true))]
     services: Vec<Service>,
-    #[command(flatten)]
-    args: TunnelZoneArgs,
+    #[arg(from_global)]
+    api: String,
+    #[arg(from_global)]
+    token: Option<String>,
+    #[arg(from_global)]
+    account: String,
+    #[arg(
+        short,
+        long,
+        default_value = "919b04037636d3b4bbc0af135eaccdfa",
+        global(true)
+    )]
+    zone: String,
 }
 
 impl Cmd {
     pub async fn run(self) -> Result<()> {
-        let client = self.args.accounts().await?;
+        let client = crate::helper::client::accounts(
+            self.api.as_str(),
+            self.token.as_deref(),
+            self.account.as_str(),
+        )
+        .await?;
         let _tunnels = client.cfd_tunnel().get(None).await?;
         todo!()
     }

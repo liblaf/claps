@@ -1,5 +1,5 @@
 use anyhow::Result;
-use claps::api::cloudflare::Cloudflare;
+use claps::api::cloudflare::{accounts::ClientAccounts, Cloudflare};
 
 pub async fn cloudflare(api: &str, token: Option<&str>) -> Result<Cloudflare> {
     let token = if let Some(token) = token {
@@ -8,6 +8,11 @@ pub async fn cloudflare(api: &str, token: Option<&str>) -> Result<Cloudflare> {
         claps::external::bw::get::notes("cloudflare.com").await?
     };
     Ok(Cloudflare::new(Some(api), token.as_str()))
+}
+
+pub async fn accounts(api: &str, token: Option<&str>, account: &str) -> Result<ClientAccounts> {
+    let client = cloudflare(api, token).await?;
+    Ok(client.accounts(account))
 }
 
 pub async fn zones(

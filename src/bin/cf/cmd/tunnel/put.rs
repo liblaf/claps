@@ -11,14 +11,20 @@ use claps::{
     external::service::Service,
 };
 
-use super::TunnelZoneArgs;
-
 #[derive(Args)]
 pub struct Cmd {
     #[arg(default_values = ["alist", "bt", "glances", "gpt", "jellyfin", "pdf"], ignore_case(true))]
     services: Vec<Service>,
-    #[command(flatten)]
-    args: TunnelZoneArgs,
+    #[arg(from_global)]
+    api: String,
+    #[arg(from_global)]
+    token: Option<String>,
+    #[arg(from_global)]
+    account: String,
+    #[arg(from_global)]
+    zone: String,
+    #[arg(from_global)]
+    name: Option<String>,
 }
 
 impl Cmd {
@@ -34,21 +40,26 @@ impl Cmd {
                 Err(_) => None,
             })
             .collect::<Vec<_>>();
-        let client = self.args.accounts().await?;
+        let client = crate::helper::client::accounts(
+            self.api.as_str(),
+            self.token.as_deref(),
+            self.account.as_str(),
+        )
+        .await?;
         let client = client.cfd_tunnel();
         let tunnel = client
-            .get(
-                self.args
-                    .name
-                    .as_deref()
-                    .or(Some(whoami::devicename().as_str())),
-            )
+            .get(Some(self.name.unwrap_or_else(whoami::devicename).as_str()))
             .await?;
         let tunnel = tunnel.first().unwrap();
-        let client_tunnel = self.args.accounts().await?.cfd_tunnel();
-        let client_dns = self.args.zones().await?.dns_records();
+        let client_dns = crate::helper::client::zones(
+            self.api.as_str(),
+            self.token.as_deref(),
+            self.zone.as_str(),
+        )
+        .await?
+        .dns_records();
         tokio::try_join!(
-            update_tunnel(&client_tunnel, tunnel, services.as_slice()),
+            update_tunnel(&client, tunnel, services.as_slice()),
             update_dns(&client_dns, tunnel, services.as_slice())
         )?;
         Ok(())
