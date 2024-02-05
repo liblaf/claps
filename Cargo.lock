@@ -295,6 +295,7 @@ dependencies = [
  "futures",
  "indicatif",
  "mime_guess",
+ "once_cell",
  "phf",
  "reqwest",
  "serde",

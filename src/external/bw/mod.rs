@@ -1,7 +1,9 @@
+use std::collections::HashMap;
 use std::ffi::{OsStr, OsString};
 use std::process::Stdio;
 
 use anyhow::Result;
+use once_cell::sync::Lazy;
 use tokio::process::Command;
 
 use crate::common::log::LogResult;
@@ -17,6 +19,13 @@ where
 {
     let cmd = &mut Command::new("bw");
     let cmd = cmd.arg("--nointeraction").args(args);
+    let hash = format!("{:?}", cmd);
+    static CACHE: Lazy<HashMap<String, Vec<u8>>> = Lazy::new(HashMap::new);
+    if let Some(output) = CACHE.get(hash.as_str()) {
+        tracing::debug!("Cache Hit: {:?}", hash);
+        return Ok(output.to_vec());
+    }
+    tracing::debug!("Cache Miss: {:?}", hash);
     let cmd = cmd
         .stdin(Stdio::null())
         .stdout(Stdio::piped())

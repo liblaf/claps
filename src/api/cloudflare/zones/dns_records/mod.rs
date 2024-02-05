@@ -2,22 +2,22 @@ use std::fmt::{Display, Formatter};
 
 use serde::{Deserialize, Serialize};
 
-use crate::api::cloudflare::zones::Zones;
+use crate::api::cloudflare::zones::ClientZones;
 
 mod delete;
 mod get;
 mod post;
 
-pub struct DNSRecords {
+pub struct ClientDnsRecords {
     client: reqwest::Client,
     api: String,
     token: String,
     zone_id: String,
 }
 
-impl Zones {
-    pub fn dns_records(&self) -> DNSRecords {
-        DNSRecords {
+impl ClientZones {
+    pub fn dns_records(&self) -> ClientDnsRecords {
+        ClientDnsRecords {
             client: self.client.to_owned(),
             api: self.api.to_string(),
             token: self.token.to_string(),
@@ -27,7 +27,7 @@ impl Zones {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct DNSRecord {
+pub struct DnsRecord {
     pub content: String,
     pub name: String,
     pub proxied: bool,
@@ -37,7 +37,7 @@ pub struct DNSRecord {
     pub ttl: u64,
 }
 
-impl Display for DNSRecord {
+impl Display for DnsRecord {
     fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
         write!(
             f,

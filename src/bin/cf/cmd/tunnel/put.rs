@@ -1,25 +1,29 @@
 use anyhow::Result;
 use clap::Args;
 use claps::{
-    api::cloudflare::accounts::cfd_tunnel::configurations::{Config, Ingress},
+    api::cloudflare::{
+        accounts::cfd_tunnel::{
+            configurations::{Config, Ingress},
+            CfdTunnel, ClientCfdTunnel,
+        },
+        zones::dns_records::ClientDnsRecords,
+    },
     external::service::Service,
 };
 
-use crate::cmd::dns::ZonesArgsFromGlobal;
-
-use super::AccountsArgsFromGlobal;
+use super::TunnelZoneArgs;
 
 #[derive(Args)]
 pub struct Cmd {
+    #[arg(default_values = ["alist", "bt", "glances", "gpt", "jellyfin", "pdf"], ignore_case(true))]
+    services: Vec<Service>,
     #[command(flatten)]
-    zone: ZonesArgs,
-    #[command(flatten)]
-    accounts: AccountsArgsFromGlobal,
+    args: TunnelZoneArgs,
 }
 
 impl Cmd {
     pub async fn run(self) -> Result<()> {
-        let services = SERVICES;
+        let services = self.services;
         let connectivity = services.iter().map(|s| s.test());
         let connectivity = futures::future::join_all(connectivity).await;
         let services = services
@@ -30,91 +34,99 @@ impl Cmd {
                 Err(_) => None,
             })
             .collect::<Vec<_>>();
-        let client = self.accounts.accounts().await?;
+        let client = self.args.accounts().await?;
         let client = client.cfd_tunnel();
-        let tunnel = client.get(Some(whoami::devicename().as_str())).await?;
+        let tunnel = client
+            .get(
+                self.args
+                    .name
+                    .as_deref()
+                    .or(Some(whoami::devicename().as_str())),
+            )
+            .await?;
         let tunnel = tunnel.first().unwrap();
-        let zones_args = ZonesArgsFromGlobal {
-            api: self.accounts.api.to_string(),
-            token: self.accounts.token.to_owned(),
-            zone: self.zone.zone.to_string(),
-            name: self.zone.name.to_owned(),
-        };
+        let client_tunnel = self.args.accounts().await?.cfd_tunnel();
+        let client_dns = self.args.zones().await?.dns_records();
         tokio::try_join!(
-            update_tunnel(&self.accounts, tunnel.id.as_str(), services.as_slice()),
-            update_dns(&zones_args, tunnel.id.as_str(), services.as_slice())
+            update_tunnel(&client_tunnel, tunnel, services.as_slice()),
+            update_dns(&client_dns, tunnel, services.as_slice())
         )?;
         Ok(())
     }
 }
 
-#[derive(Args)]
-struct ZonesArgs {
-    #[arg(
-        short,
-        long,
-        default_value = "919b04037636d3b4bbc0af135eaccdfa",
-        global = true
-    )]
-    zone: String,
-    #[arg(short, long, global = true)]
-    name: Option<String>,
-}
-
-const SERVICES: &[Service] = &[
-    Service::AList,
-    Service::BT,
-    // Service::DNS,
-    Service::Glances,
-    Service::GPT,
-    Service::Jellyfin,
-    Service::PDF,
-];
-
 async fn update_tunnel(
-    args: &AccountsArgsFromGlobal,
-    tunnel_id: &str,
+    client: &ClientCfdTunnel,
+    tunnel: &CfdTunnel,
     services: &[Service],
 ) -> Result<()> {
     let config = Config {
         ingress: services
             .iter()
             .map(Service::ingress_main)
-            .chain(services.iter().map(Ingress::from))
+            .chain(
+                services
+                    .iter()
+                    .map(|s| s.ingress(Some(tunnel.name.as_str()))),
+            )
             .chain([Ingress {
                 hostname: None,
                 service: "http_status:404".to_string(),
             }])
             .collect(),
     };
-    let client = args.accounts().await?;
-    let client = client.cfd_tunnel();
-    let client = client.configurations(tunnel_id);
+    let client = client.configurations(tunnel.id.as_str());
     println!("{}", config);
     client.put(&config).await
 }
 
 async fn update_dns(
-    args: &ZonesArgsFromGlobal,
-    tunnel_id: &str,
+    client: &ClientDnsRecords,
+    tunnel: &CfdTunnel,
     services: &[Service],
 ) -> Result<()> {
-    let client = args.zones().await?;
-    let client = client.dns_records();
+    let records = client.get(None).await?;
+    let records = records
+        .into_iter()
+        .filter(|r| {
+            r.name
+                .ends_with(format!("-{}.liblaf.me", tunnel.name.to_lowercase()).as_str())
+        })
+        .collect::<Vec<_>>();
+    let names = services
+        .iter()
+        .map(|s| s.hostname(Some(tunnel.name.as_str())))
+        .collect::<Vec<_>>();
+    futures::future::try_join_all(records.iter().filter_map(|r| {
+        if names.contains(&r.name) {
+            None
+        } else {
+            Some(client.delete(r.id.as_str(), Some(r)))
+        }
+    }))
+    .await?;
     futures::future::try_join_all(services.iter().map(|s| async {
-        let name = s.hostname();
-        let content = format!("{}.cfargotunnel.com", tunnel_id);
-        let records = client.get(Some(name.as_str())).await?;
-        if let Some(record) = records.first() {
+        let name = s.hostname(Some(tunnel.name.as_str()));
+        let content = format!("{}.cfargotunnel.com", tunnel.id);
+        let records = records
+            .iter()
+            .filter(|r| r.name == name)
+            .collect::<Vec<_>>();
+        let mut exists = false;
+        for record in records {
             if record.content == content {
                 tracing::info!("DNS Record Exists: {}", record);
-                return Ok(());
+                exists = true;
+            } else {
+                client.delete(record.id.as_str(), Some(record)).await?;
             }
-            client.delete(record.id.as_str(), Some(record)).await?;
         }
-        client
-            .post(content, name, Some(true), "CNAME".to_string(), None)
-            .await
+        if !exists {
+            client
+                .post(content, name, Some(true), "CNAME".to_string(), None)
+                .await?;
+        }
+        Ok::<_, anyhow::Error>(())
     }))
     .await?;
     Ok(())
