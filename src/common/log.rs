@@ -24,7 +24,7 @@ where
                 clap_verbosity_flag::Level::Trace => builder.with_max_level(tracing::Level::TRACE),
             };
             if level < clap_verbosity_flag::Level::Debug {
-                builder.without_time().init();
+                builder.with_target(false).without_time().init();
             } else {
                 builder.init();
             }

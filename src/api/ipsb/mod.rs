@@ -40,7 +40,7 @@ pub async fn geoip(addr: Option<IpAddr>, v: Option<IPVersion>) -> Result<GeoIP> 
     };
     let response = request.send().await.log()?;
     let response = response.error_for_status().log()?;
-    Ok(response.json_log::<GeoIP>().await?)
+    response.json_log::<GeoIP>().await
 }
 
 #[serde_with::skip_serializing_none]

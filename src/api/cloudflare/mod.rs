@@ -1,35 +1,49 @@
-use serde::Deserialize;
+use reqwest::{header::HeaderMap, ClientBuilder};
+use serde::{Deserialize, Serialize};
 
-mod create;
-mod delete;
-mod list;
-mod update;
+use crate::common::log::LogResult;
 
-const API: &str = "https://api.cloudflare.com/client/v4";
+pub mod zones;
 
-pub struct Client {
-    api: String,
+pub const API: &str = "https://api.cloudflare.com/client/v4";
+
+pub struct Cloudflare {
     client: reqwest::Client,
+    api: String,
     token: String,
-    zone: String,
 }
 
-impl Client {
-    pub fn new(token: &str, zone: &str) -> Self {
+impl Cloudflare {
+    pub fn new(api: Option<&str>, token: &str) -> Self {
         Self {
-            api: API.to_string(),
-            client: reqwest::Client::new(),
+            api: api.unwrap_or(API).to_string(),
+            client: ClientBuilder::new()
+                .default_headers({
+                    let mut headers = HeaderMap::new();
+                    headers.insert(
+                        reqwest::header::AUTHORIZATION,
+                        format!("Bearer {}", token).parse().log().unwrap(),
+                    );
+                    headers
+                })
+                .build()
+                .log()
+                .unwrap(),
             token: token.to_string(),
-            zone: zone.to_string(),
         }
     }
 }
 
-#[derive(Deserialize)]
-pub struct DNSRecord {
-    pub content: String,
-    pub name: String,
-    #[serde(rename = "type")]
-    pub type_: String,
-    pub id: String,
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Message {
+    code: i64,
+    message: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct ResultInfo {
+    count: i64,
+    page: i64,
+    per_page: i64,
+    total_count: i64,
 }
