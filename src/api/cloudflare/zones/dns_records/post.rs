@@ -2,7 +2,7 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    api::cloudflare::Message,
+    api::cloudflare::ResponseObject,
     common::log::{LogJson, LogResult},
 };
 
@@ -30,7 +30,10 @@ impl DNSRecords {
             .bearer_auth(self.token.as_str());
         let response = request.send().await.log()?;
         let response = response.error_for_status().log()?;
-        let response = response.json_log::<Response>().await?.log();
+        let response = response
+            .json_log::<ResponseObject<DNSRecord>>()
+            .await?
+            .log();
         tracing::info!("Create DNS Record: {}", response.result);
         Ok(())
     }
@@ -45,24 +48,4 @@ struct Request {
     #[serde(rename = "type")]
     type_: String,
     ttl: Option<u64>,
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-struct Response {
-    result: DNSRecord,
-    errors: Vec<Message>,
-    messages: Vec<Message>,
-    success: bool,
-}
-
-impl Response {
-    fn log(self) -> Self {
-        for error in self.errors.as_slice() {
-            tracing::error!(code = error.code, message = error.message)
-        }
-        for message in self.messages.as_slice() {
-            tracing::info!(code = message.code, message = message.message)
-        }
-        self
-    }
 }

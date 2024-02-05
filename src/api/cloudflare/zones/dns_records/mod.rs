@@ -28,13 +28,13 @@ impl Zones {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct DNSRecord {
-    pub id: String,
+    pub content: String,
     pub name: String,
+    pub proxied: bool,
     #[serde(rename = "type")]
     pub type_: String,
+    pub id: String,
     pub ttl: u64,
-    pub content: String,
-    pub proxied: bool,
 }
 
 impl Display for DNSRecord {

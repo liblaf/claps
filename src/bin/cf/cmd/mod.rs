@@ -6,6 +6,7 @@ use claps::api::cloudflare::Cloudflare;
 use claps::common::log::LogInit;
 
 mod dns;
+mod tunnel;
 
 #[derive(Parser)]
 #[command(name = env!("CARGO_BIN_NAME"), version, author, about, styles = claps::common::cmd::STYLES)]
@@ -22,6 +23,7 @@ pub struct Cmd {
 enum SubCmd {
     Complete(claps::common::cmd::complete::Cmd),
     Dns(dns::Cmd),
+    Tunnel(tunnel::Cmd),
 }
 
 #[derive(Args)]
@@ -38,6 +40,7 @@ impl Cmd {
         match self.sub_cmd {
             SubCmd::Complete(cmd) => cmd.run(Cmd::command()),
             SubCmd::Dns(cmd) => cmd.run().await,
+            SubCmd::Tunnel(cmd) => cmd.run().await,
         }
     }
 }

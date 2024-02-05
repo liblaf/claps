@@ -2,7 +2,10 @@ use anyhow::Result;
 use clap::Args;
 use tabled::{
     builder::Builder,
-    settings::{object::Columns, Alignment, Color, Style},
+    settings::{
+        object::{Cell, Columns, Rows},
+        Alignment, Color, Style,
+    },
 };
 
 use super::ZonesArgsFromGlobal;
@@ -31,9 +34,12 @@ impl Cmd {
         let mut table = table.build();
         table
             .with(Style::empty())
-            .modify(Columns::first(), Color::BOLD | Color::FG_GREEN)
-            .modify(Columns::single(1), Color::BOLD | Color::FG_BLUE)
-            .modify(Columns::single(2), Alignment::right());
+            .modify(Columns::single(2), Alignment::right())
+            .modify(Columns::first(), Color::FG_GREEN)
+            .modify(Columns::single(1), Color::FG_BLUE)
+            .modify(Rows::first(), Color::BOLD)
+            .modify(Cell::new(0, 0), Color::BOLD | Color::FG_GREEN)
+            .modify(Cell::new(0, 1), Color::BOLD | Color::FG_BLUE);
         println!("{}", table);
         Ok(())
     }
