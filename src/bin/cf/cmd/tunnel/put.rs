@@ -118,7 +118,7 @@ async fn update_dns(
     .await?;
     futures::future::try_join_all(services.iter().map(|s| async {
         let name = s.hostname(Some(tunnel.name.as_str()));
-        let content = format!("{}.cfargotunnel.com", tunnel.id);
+        let content = crate::helper::domain::tunnel(tunnel.id.as_str());
         let records = records
             .iter()
             .filter(|r| r.name == name)

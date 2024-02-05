@@ -1,3 +1,6 @@
+use std::fmt::{Display, Formatter};
+
+use colored::Colorize;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
@@ -45,4 +48,15 @@ pub enum Status {
     Degraded,
     Healthy,
     Down,
+}
+
+impl Display for Status {
+    fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
+        match self {
+            Status::Inactive => write!(f, "{}", "Inactive".dimmed()),
+            Status::Degraded => write!(f, "{}", "Degraded".yellow()),
+            Status::Healthy => write!(f, "{}", "Healthy".green()),
+            Status::Down => write!(f, "{}", "Down".red()),
+        }
+    }
 }

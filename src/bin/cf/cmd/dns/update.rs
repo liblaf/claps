@@ -18,10 +18,7 @@ pub struct Cmd {
 impl Cmd {
     pub async fn run(self) -> Result<()> {
         let mut addrs: Vec<IpAddr> = claps::external::py::ip().await?;
-        let name = format!(
-            "{}.ddns.liblaf.me",
-            self.name.unwrap_or_else(whoami::hostname)
-        );
+        let name = crate::helper::domain::ddns(self.name.as_deref());
         let client = crate::helper::client::zones(
             self.api.as_str(),
             self.token.as_deref(),

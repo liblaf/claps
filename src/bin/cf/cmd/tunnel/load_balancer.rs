@@ -15,12 +15,7 @@ pub struct Cmd {
     token: Option<String>,
     #[arg(from_global)]
     account: String,
-    #[arg(
-        short,
-        long,
-        default_value = "919b04037636d3b4bbc0af135eaccdfa",
-        global(true)
-    )]
+    #[arg(from_global)]
     zone: String,
 }
 
