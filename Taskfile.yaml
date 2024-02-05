@@ -8,7 +8,7 @@ vars:
   HOST:
     sh: |
       rustc --version --verbose | sed --quiet "s/host: //p"
-  TARGETS: bws ddns gfw pic
+  TARGETS: bws cf gfw pic
 
 tasks:
   default:
