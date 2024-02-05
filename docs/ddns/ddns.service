@@ -1,5 +1,5 @@
 [Service]
-ExecStart = %h/.local/bin/ddns update
+ExecStart = %h/.local/bin/ddns dns update
 TimeoutSec = 1min
 
 [Unit]
