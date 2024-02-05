@@ -5,7 +5,7 @@ pub async fn cloudflare(api: &str, token: Option<&str>) -> Result<Cloudflare> {
     let token = if let Some(token) = token {
         token.to_string()
     } else {
-        claps::external::bw::get::notes("bitwarden.com").await?
+        claps::external::bw::get::notes("cloudflare.com").await?
     };
     Ok(Cloudflare::new(Some(api), token.as_str()))
 }
