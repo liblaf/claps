@@ -16,6 +16,7 @@ jobs:
         run: |
           mkdir --parents --verbose "$HOME/.local/bin"
           gh release --repo "${{ github.repository }}" download "dev" --output "$HOME/.local/bin/cf" --pattern "cf-x86_64-unknown-linux-gnu"
+          chmod +x "$HOME/.local/bin/cf"
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Cloudflare Load Balancer
