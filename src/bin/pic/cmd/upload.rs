@@ -14,7 +14,7 @@ use crate::cmd::GlobalArgs;
 pub struct Cmd {
     #[arg()]
     file: PathBuf,
-    #[arg(long, default_value = "/public/img")]
+    #[arg(long, default_value("/public/img"))]
     prefix: PathBuf,
 }
 

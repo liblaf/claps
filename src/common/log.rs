@@ -1,8 +1,21 @@
 use std::panic::Location;
 
-use clap_verbosity_flag::Verbosity;
+use clap_verbosity_flag::{LogLevel, Verbosity};
 use reqwest::Response;
 use serde::de::DeserializeOwned;
+
+#[derive(Copy, Clone, Debug, Default)]
+pub struct DefaultLevel;
+
+impl LogLevel for DefaultLevel {
+    fn default() -> Option<clap_verbosity_flag::Level> {
+        if shadow_rs::is_debug() {
+            Some(clap_verbosity_flag::Level::Trace)
+        } else {
+            Some(clap_verbosity_flag::Level::Info)
+        }
+    }
+}
 
 pub trait LogInit {
     fn init(&self);

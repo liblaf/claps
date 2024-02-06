@@ -3,10 +3,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::common::log::{LogJson, LogResult};
 
-use super::{DNSRecord, DNSRecords};
+use super::{ClientDnsRecords, DnsRecord};
 
-impl DNSRecords {
-    pub async fn delete(&self, dns_record_id: &str, dns_record: Option<&DNSRecord>) -> Result<()> {
+impl ClientDnsRecords {
+    pub async fn delete(&self, dns_record_id: &str, dns_record: Option<&DnsRecord>) -> Result<()> {
         let request = self
             .client
             .delete(format!(
@@ -18,9 +18,9 @@ impl DNSRecords {
         let response = response.error_for_status().log()?;
         let response = response.json_log::<Response>().await?;
         if let Some(dns_record) = dns_record {
-            tracing::info!("Delete DNS Record: {}", dns_record)
+            tracing::info!("Delete Dns Record: {}", dns_record)
         } else {
-            tracing::info!("Delete DNS Record: {}", response.result.id)
+            tracing::info!("Delete Dns Record: {}", response.result.id)
         }
         Ok(())
     }

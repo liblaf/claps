@@ -3,9 +3,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::common::log::LogResult;
 
-use super::{DNSRecord, DNSRecords};
+use super::{ClientDnsRecords, DnsRecord};
 
-impl DNSRecords {
+impl ClientDnsRecords {
     pub async fn post(
         &self,
         content: String,
@@ -26,8 +26,8 @@ impl DNSRecords {
             })
             .bearer_auth(self.token.as_str());
         let response = request.send().await.log()?;
-        let result = crate::api::cloudflare::handle::<DNSRecord>(response).await?;
-        tracing::info!("Create DNS Record: {}", result);
+        let result = crate::api::cloudflare::handle::<DnsRecord>(response).await?;
+        tracing::info!("Create Dns Record: {}", result);
         Ok(())
     }
 }

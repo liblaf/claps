@@ -1,0 +1,21 @@
+name: Load Balancer
+
+on:
+  schedule:
+    - cron: "*/5 0 * * *"
+
+jobs:
+  load-balancer:
+    name: Load Balancer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install CF CLI
+        run: |
+          mkdir --parents --verbose "$HOME/.local/bin"
+          gh release --repo "${{ github.repository }}" download "dev" --output "$HOME/.local/bin/cf" --pattern "cf-x86_64-unknown-linux-gnu"
+        env:
+          GH_TOKEN: ${{ github.token }}
+      - name: Cloudflare Load Balancer
+        run: cf -vvv tunnel load-balancer
+        env:
+          CF_TOKEN: ${{ secrets.CF_TOKEN }}

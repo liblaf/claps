@@ -10,7 +10,7 @@ use crate::cmd::GlobalArgs;
 
 #[derive(Args)]
 pub struct Cmd {
-    #[arg(default_value = "/")]
+    #[arg(default_value("/"))]
     path: PathBuf,
     #[arg(short, long, default_value_t = 3)]
     depth: i32,

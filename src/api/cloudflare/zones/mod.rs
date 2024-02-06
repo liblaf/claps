@@ -1,8 +1,8 @@
 use crate::api::cloudflare::Cloudflare;
 
-mod dns_records;
+pub mod dns_records;
 
-pub struct Zones {
+pub struct ClientZones {
     client: reqwest::Client,
     api: String,
     token: String,
@@ -10,8 +10,8 @@ pub struct Zones {
 }
 
 impl Cloudflare {
-    pub fn zones(&self, zone_id: &str) -> Zones {
-        Zones {
+    pub fn zones(&self, zone_id: &str) -> ClientZones {
+        ClientZones {
             client: self.client.to_owned(),
             api: self.api.to_string(),
             token: self.token.to_string(),
