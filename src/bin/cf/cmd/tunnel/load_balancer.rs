@@ -34,6 +34,7 @@ impl Cmd {
         .await?;
         let mut tunnels = client.cfd_tunnel().get(None).await?;
         tunnels.sort_unstable_by(|a, b| a.status.cmp(&b.status));
+        tracing::debug!("{:?}", tunnels);
         let client_dns = crate::helper::client::zones(
             self.api.as_str(),
             self.token.as_deref(),
@@ -89,5 +90,5 @@ async fn update_service(
         return Ok(());
     }
     tracing::warn!("No Tunnel Found for Service: {}", service);
-    return Ok(());
+    Ok(())
 }
