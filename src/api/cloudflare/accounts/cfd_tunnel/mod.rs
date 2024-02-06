@@ -41,13 +41,13 @@ pub struct Connection {
     pub is_pending_reconnect: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Status {
-    Inactive,
-    Degraded,
     Healthy,
+    Degraded,
     Down,
+    Inactive,
 }
 
 impl Display for Status {

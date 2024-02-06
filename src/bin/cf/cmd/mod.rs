@@ -1,8 +1,8 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
-use clap_verbosity_flag::{InfoLevel, Verbosity};
+use clap_verbosity_flag::Verbosity;
 
-use claps::common::log::LogInit;
+use claps::common::log::{DefaultLevel, LogInit};
 
 mod dns;
 mod tunnel;
@@ -12,28 +12,28 @@ mod tunnel;
 pub struct Cmd {
     #[command(subcommand)]
     sub_cmd: SubCmd,
-    #[arg(long, default_value = claps::api::cloudflare::API, global(true))]
+    #[arg(long, default_value(claps::api::cloudflare::API), global(true))]
     api: String,
-    #[arg(short, long, global(true))]
+    #[arg(short, long, env("CF_TOKEN"), global(true))]
     token: Option<String>,
     #[arg(
         short,
         long,
-        default_value = "7ad40aa54c5d9453abe45eeb3c6643de",
+        default_value("7ad40aa54c5d9453abe45eeb3c6643de"),
         global(true)
     )]
     account: String,
     #[arg(
         short,
         long,
-        default_value = "919b04037636d3b4bbc0af135eaccdfa",
+        default_value("919b04037636d3b4bbc0af135eaccdfa"),
         global(true)
     )]
     zone: String,
     #[arg(short, long, global(true))]
     name: Option<String>,
     #[command(flatten)]
-    verbose: Verbosity<InfoLevel>,
+    verbose: Verbosity<DefaultLevel>,
 }
 
 #[derive(Subcommand)]

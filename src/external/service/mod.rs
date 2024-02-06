@@ -26,9 +26,17 @@ impl Display for Service {
 }
 
 impl Service {
-    pub fn hostname(&self, name: Option<&str>) -> String {
-        let name = name.map(|s| s.to_lowercase());
-        format!("{}-{}.liblaf.me", self, name.unwrap_or(whoami::hostname()))
+    pub fn hostname_balancer(&self) -> String {
+        format!("{}.liblaf.me", self)
+    }
+
+    pub fn hostname_server(&self, name: Option<&str>) -> String {
+        let name: Option<String> = name.map(|s| s.to_lowercase());
+        format!(
+            "{}-{}.liblaf.me",
+            self,
+            name.unwrap_or_else(whoami::hostname)
+        )
     }
 
     pub fn service(&self) -> String {
@@ -43,16 +51,16 @@ impl Service {
         }
     }
 
-    pub fn ingress(&self, name: Option<&str>) -> Ingress {
+    pub fn ingress_balancer(&self) -> Ingress {
         Ingress {
-            hostname: Some(self.hostname(name)),
+            hostname: Some(self.hostname_balancer()),
             service: self.service(),
         }
     }
 
-    pub fn ingress_main(&self) -> Ingress {
+    pub fn ingress_server(&self, name: Option<&str>) -> Ingress {
         Ingress {
-            hostname: Some(format!("{}.liblaf.me", self)),
+            hostname: Some(self.hostname_server(name)),
             service: self.service(),
         }
     }

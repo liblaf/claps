@@ -1,9 +1,9 @@
 use anyhow::Result;
 use clap::{CommandFactory, Parser, Subcommand};
-use clap_verbosity_flag::{InfoLevel, Verbosity};
+use clap_verbosity_flag::Verbosity;
 
 use claps::common::cmd::STYLES;
-use claps::common::log::LogInit;
+use claps::common::log::{DefaultLevel, LogInit};
 
 mod ip;
 mod sub;
@@ -16,7 +16,7 @@ pub struct Cmd {
     #[arg(long)]
     no_proxy: bool,
     #[command(flatten)]
-    verbose: Verbosity<InfoLevel>,
+    verbose: Verbosity<DefaultLevel>,
 }
 
 #[derive(Subcommand)]

@@ -74,11 +74,11 @@ async fn update_tunnel(
     let config = Config {
         ingress: services
             .iter()
-            .map(Service::ingress_main)
+            .map(Service::ingress_balancer)
             .chain(
                 services
                     .iter()
-                    .map(|s| s.ingress(Some(tunnel.name.as_str()))),
+                    .map(|s| s.ingress_server(Some(tunnel.name.as_str()))),
             )
             .chain([Ingress {
                 hostname: None,
@@ -106,7 +106,7 @@ async fn update_dns(
         .collect::<Vec<_>>();
     let names = services
         .iter()
-        .map(|s| s.hostname(Some(tunnel.name.as_str())))
+        .map(|s| s.hostname_server(Some(tunnel.name.as_str())))
         .collect::<Vec<_>>();
     futures::future::try_join_all(records.iter().filter_map(|r| {
         if names.contains(&r.name) {
@@ -117,11 +117,11 @@ async fn update_dns(
     }))
     .await?;
     futures::future::try_join_all(services.iter().map(|s| async {
-        let name = s.hostname(Some(tunnel.name.as_str()));
+        let hostname = s.hostname_server(Some(tunnel.name.as_str()));
         let content = crate::helper::domain::tunnel(tunnel.id.as_str());
         let records = records
             .iter()
-            .filter(|r| r.name == name)
+            .filter(|r| r.name == hostname)
             .collect::<Vec<_>>();
         let mut exists = false;
         for record in records {
@@ -134,7 +134,7 @@ async fn update_dns(
         }
         if !exists {
             client
-                .post(content, name, Some(true), "CNAME".to_string(), None)
+                .post(content, hostname, Some(true), "CNAME".to_string(), None)
                 .await?;
         }
         Ok::<_, anyhow::Error>(())

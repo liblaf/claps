@@ -1,10 +1,10 @@
 use anyhow::Result;
 use clap::{Args, CommandFactory, Parser, Subcommand};
-use clap_verbosity_flag::{InfoLevel, Verbosity};
+use clap_verbosity_flag::Verbosity;
 
 use claps::api::alist::Client;
 use claps::common::cmd::STYLES;
-use claps::common::log::LogInit;
+use claps::common::log::{DefaultLevel, LogInit};
 
 mod list;
 mod upload;
@@ -17,7 +17,7 @@ pub struct Cmd {
     #[command(flatten)]
     args: GlobalArgs,
     #[command(flatten)]
-    verbose: Verbosity<InfoLevel>,
+    verbose: Verbosity<DefaultLevel>,
 }
 
 #[derive(Subcommand)]
@@ -29,11 +29,11 @@ enum SubCmd {
 
 #[derive(Args)]
 struct GlobalArgs {
-    #[arg(long, default_value = "https://alist.liblaf.me", global = true)]
+    #[arg(long, default_value("https://alist.liblaf.me"), global(true))]
     url: String,
-    #[arg(short, long, global = true)]
+    #[arg(short, long, global(true))]
     username: Option<String>,
-    #[arg(short, long, global = true)]
+    #[arg(short, long, global(true))]
     password: Option<String>,
 }
 

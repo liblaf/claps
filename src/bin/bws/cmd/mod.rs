@@ -1,12 +1,12 @@
 use clap::{CommandFactory, Parser, Subcommand};
-use clap_verbosity_flag::{InfoLevel, Verbosity};
+use clap_verbosity_flag::Verbosity;
 use tabled::builder::Builder;
 use tabled::settings::object::Columns;
 use tabled::settings::peaker::PriorityMax;
 use tabled::settings::{Color, Style, Width};
 
 use claps::common::cmd::STYLES;
-use claps::common::log::{LogInit, LogResult};
+use claps::common::log::{DefaultLevel, LogInit, LogResult};
 use claps::external::bw::types::Item;
 
 #[derive(Parser)]
@@ -17,7 +17,7 @@ pub struct Cmd {
     #[arg()]
     search: Option<String>,
     #[command(flatten)]
-    verbose: Verbosity<InfoLevel>,
+    verbose: Verbosity<DefaultLevel>,
 }
 
 #[derive(Subcommand)]
