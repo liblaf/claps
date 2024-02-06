@@ -70,6 +70,7 @@ async fn update_service(
         if let Some(balancer) = record_balancer {
             if balancer.content == server.content {
                 tracing::info!("DNS Record Exists: {}", balancer);
+                tracing::info!("{} -> {}", hostname_balancer, tunnel.name);
                 return Ok(());
             } else {
                 client.delete(balancer.id.as_str(), Some(balancer)).await?;
@@ -84,7 +85,9 @@ async fn update_service(
                 None,
             )
             .await?;
+        tracing::info!("{} -> {}", hostname_balancer, tunnel.name);
         return Ok(());
     }
-    Ok(())
+    tracing::warn!("No Tunnel Found for Service: {}", service);
+    return Ok(());
 }
