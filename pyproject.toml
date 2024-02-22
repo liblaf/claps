@@ -17,7 +17,7 @@ loguru = "^0.7.2"
 opencc = "^1.1.7"
 pydantic = "^2.6.0"
 python = "^3.11"
-dnspython = "^2.5.0"
+dnspython = "^2.6.1"
 
 [tool.poetry.group.dev.dependencies]
 icecream = "^2.1.3"
