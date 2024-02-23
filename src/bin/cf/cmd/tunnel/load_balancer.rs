@@ -81,7 +81,7 @@ async fn update_service(
             .post(
                 server.content.to_string(),
                 hostname_balancer.to_string(),
-                None,
+                Some(true),
                 "CNAME".to_string(),
                 None,
             )
