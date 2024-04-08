@@ -13,12 +13,10 @@ class Smart:
         self.outbounds = []
 
     @abc.abstractmethod
-    def build(self) -> _outbound.Outbound:
-        ...
+    def build(self) -> _outbound.Outbound: ...
 
     @abc.abstractmethod
-    def append(self, group: str) -> None:
-        ...
+    def append(self, group: str) -> None: ...
 
 
 class Proxy(Smart):

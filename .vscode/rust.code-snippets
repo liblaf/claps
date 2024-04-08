@@ -18,6 +18,6 @@
   "#[derive(Json)]": {
     "scope": "rust",
     "prefix": "#json",
-    "body": ["#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]"]
-  }
+    "body": ["#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]"],
+  },
 }
